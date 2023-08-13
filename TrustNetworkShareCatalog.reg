@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\WEF\TrustedCatalogs\{3ca6d518-bd63-4e68-bac8-50bb1f46db32}]
+"Id"="{3ca6d518-bd63-4e68-bac8-50bb1f46db32}"
+"Url"="\\\\DESKTOP-LE4SKK1\\Users\\Adam\\Coding Projects\\Side\\SabreExcelAddIn\\SabreExcelAddIn\\bin\\Debug\\OfficeAppManifests"
+"Flags"=dword:00000001
