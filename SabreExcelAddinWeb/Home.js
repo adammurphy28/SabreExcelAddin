@@ -1,19 +1,35 @@
 ﻿(function ($) {
     "use strict";
 
+    // TODO
+    /*
+        - Add Refresh Button
+        - Make Select All add everything to copyarea
+        - Add Frequent Flyer Dropdown
+        - Remove items from textarea on deselect
+        - Add Styling
+        - Add Toggle for Passport
+        - Add Toggle for Meal Option:
+        (AVMLA,BBMLA,BLMLA,CHMLA,DBMLA,FPMLA,GFMLA,HNMLA,KSMLA,LCMLA,LFMLA,LSMLA,MOMLA,NLMLA,NOMLA,RVMLA,SFMLA,SPMLA,VGMLA,VJMLA,VLMLA,VOMLA)
+        - Add iteration toggle(Start with -2.1, -3.1, etc.)
+    */
+
+    // To account for more than 1 member per record
+    let crewIteration = 1;
+
     // The initialize function must be run each time a new page is loaded.
     Office.initialize = function () {
 
         $(document).ready(async function () {
 
             const copyArea = $('.copyArea'),
-                info = await getCrewInfo();
+                crewInfo = await getCrewInfo();
             let m = 0;
 
-            console.log(info);
+            console.log(crewInfo);
 
             // Loop through filtered items
-            $.each(info, function (key, value) {
+            $.each(crewInfo, function (key, value) {
 
                 const memberName = value[0],
                     memberHtml = $(`<div class="selection"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div>`);
@@ -23,52 +39,10 @@
                 m++;
             });
 
-            // Loop through input containers
-            $('.selection').each(function () {
-
-                // Find inputs for members
-                const input = $(this).find('input.member'),
-                    id = input.attr('id');
-
-                let position = '';
-
-                // For some reason not all member id's are strings???
-                if (typeof (id) === 'string') {
-
-                    position = parseInt(id.replace('member-', ''));
-                }
-
-                // When clicking member
-                input.on('click', function () {
-
-                    const lineBreak = '\n';
-
-                    // Start with Name
-                    let sabreSymbol = '§',
-                        sabreFormatting = Object.values(info[position])[0] + sabreSymbol;
-
-                    // Loop through each value for that row
-                    $.each(info[position], function (key, value) {
-
-                        // If value contains the info we need
-                        if (value.includes("3DOCS/DB") || value.includes("3CTCE") || value.includes("3CTCM") || value.includes("3DOCO") || value.includes("3DOCS/P/")) {
-
-                            // Append value to formatted string
-                            sabreFormatting += value + sabreSymbol;
-                        }
-                    });
-
-                    // If copy area is empty
-                    if (copyArea.text() === '') {
-
-                        // Append string as is
-                        copyArea.append(sabreFormatting);
-                    } else {
-
-                        // Else append string with linebreak added
-                        copyArea.append(lineBreak + sabreFormatting);
-                    }
-                })
+            // When clicking member
+            $('input.member').on('click', function () {
+                formatInfo($(this), crewInfo, copyArea);
+                crewIteration++;
             });
 
             // Select all inputs
@@ -80,6 +54,40 @@
             })
         });
     };
+
+    function formatInfo(input, info, copyTarget) {
+
+        // Find inputs for members
+        const emptyCopyArea = copyTarget.text() === '',
+            id = input.attr('id'),
+            lineBreak = '\n';
+
+        let position = '';
+
+        // For some reason not all member id's are strings???
+        if (typeof (id) === 'string') {
+
+            position = parseInt(id.replace('member-', ''));
+        }
+
+        // Start with Name
+        let sabreSymbol = '§',
+            sabreFormatting = '-' + Object.values(info[position])[0] + sabreSymbol;
+
+        // Loop through each value for that row
+        $.each(info[position], function (key, value) {
+
+            // If value contains the info we need
+            if (value.includes("3DOCS/DB") || value.includes("3CTCE") || value.includes("3CTCM") || value.includes("3DOCO") || value.includes("3DOCS/P/")) {
+
+                // Append value to formatted string
+                emptyCopyArea ? sabreFormatting += value + sabreSymbol : sabreFormatting += value + '-' + crewIteration + '.1' + sabreSymbol;
+            }
+        });
+
+        // If copy area is empty, append string as is, else append string with linebreak added
+        emptyCopyArea ? copyTarget.append(sabreFormatting) : copyTarget.append(lineBreak + sabreFormatting);
+    }
 
     async function getCrewInfo() {
 
