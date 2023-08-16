@@ -6,7 +6,6 @@
         - Add Refresh Button
         - Make Select All add everything to copyarea
         - Add Frequent Flyer Dropdown
-        - Remove items from textarea on deselect
         - Add Styling
         - Add Toggle for Passport
         - Add Toggle for Meal Option:
@@ -15,7 +14,8 @@
     */
 
     // To account for more than 1 member per record
-    let crewIteration = 1;
+    let crewIteration = 1,
+        textBox = [];
 
     // The initialize function must be run each time a new page is loaded.
     Office.initialize = function () {
@@ -41,8 +41,18 @@
 
             // When clicking member
             $('input.member').on('click', function () {
-                formatInfo($(this), crewInfo, copyArea);
-                crewIteration++;
+                const member = $(this);
+
+                // If member is checked
+                if (member.is(':checked')) {
+                    // Add member to textbox and increase iteration
+                    if (formatInfo(member, crewInfo, copyArea)) crewIteration++;
+
+                // Else
+                } else {
+                    // Remove member from textbox and decrease iteration
+                    if (removeInfo(member, copyArea)) crewIteration--;
+                }
             });
 
             // Select all inputs
@@ -86,7 +96,16 @@
         });
 
         // If copy area is empty, append string as is, else append string with linebreak added
-        emptyCopyArea ? copyTarget.append(sabreFormatting) : copyTarget.append(lineBreak + sabreFormatting);
+        if (emptyCopyArea) {
+            textBox.push(sabreFormatting);
+            copyTarget.append(textBox);
+        } else {
+            textBox.push(lineBreak + sabreFormatting);
+            copyTarget.text("");
+            copyTarget.append(textBox);
+        }
+
+        return true;
     }
 
     async function getCrewInfo() {
@@ -159,6 +178,57 @@
         if (error instanceof OfficeExtension.Error) {
             console.log("Debug info: " + JSON.stringify(error.debugInfo));
         }
+    }
+
+    function removeInfo(input, copyTarget) {
+
+        // Find info name
+        const needsRemoval = input.siblings('label').text(),
+            text = copyTarget.text();
+
+        // If textbox includes name that's getting removed
+        if (text.includes(needsRemoval)) {
+
+            let newString = '',
+                removedIteration = '';
+
+            // Loop through textbox
+            for (let i = 0; i < textBox.length; i++) {
+
+                // If textbox item includes name
+                if (textBox[i].includes(needsRemoval)) {
+
+                    // Clear everything except -X.1
+                    newString = textBox[i].replace(/.+(?=\-\d+\.1)/, '');
+                    // If new string includes .1, trim string to number, else, set iteration to 0
+                    newString.includes('.1') ? removedIteration = parseInt(newString.substring(0, newString.indexOf('1') + 1).trim().replace('-', '').replace('.1', '')) - 1 : removedIteration = 0;
+                    // Remove string from array
+                    textBox.splice(textBox.indexOf(textBox[i]), 1);
+                }
+            }
+
+            // Loop through textbox again with new iteration
+            for (let j = removedIteration; j < textBox.length; j++) {
+
+                // If iteration starts at 0, clear first iteration
+                if (j === 0) {
+                    textBox[j] = textBox[j].replaceAll('-2.1', '').replace('\n', '');
+
+                // Else replace text with correct iteration
+                } else {
+                    textBox[j] = textBox[j].replaceAll("-" + (j + 2) + ".1", "-" + (j + 1) + ".1");
+                }
+            };
+
+            // Clear textbox
+            copyTarget.text("");
+
+            // Add new items
+            copyTarget.append(textBox);
+
+        }
+
+        return true;
     }
 
     function selectAll() {
