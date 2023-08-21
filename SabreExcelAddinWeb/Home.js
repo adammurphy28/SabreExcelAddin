@@ -5,7 +5,6 @@
     /*
         - Add Refresh Button
         - Make Select All add everything to copyarea
-        - Add Frequent Flyer Dropdown
         - Add Styling
         - Add Toggle for Passport
         - Add Toggle for Meal Option:
@@ -32,9 +31,38 @@
             $.each(crewInfo, function (key, value) {
 
                 const memberName = value[0],
-                    memberHtml = $(`<div class="selection"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div>`);
+                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div></div>`);
 
                 $('.crew-member-select-container').append(memberHtml);
+
+                // Loop through values
+                for (let i = 0; i < value.length; i++) {
+
+                    // If value contain Frequent Flyer ID
+                    if (/^FF.*$/.test(value[i])) {
+
+                        // If value contains multiple FF in one cell
+                        if (/^FF.*FF.*$/.test(value[i])) {
+
+                            // Split value by whitespace
+                            const multipleFF = value[i].split(/[\s]/);
+
+                            // Loop through array of split values
+                            for (let j = 0; j < multipleFF.length; j++) {
+
+                                // If value starts with "FF"
+                                if (multipleFF[j].substring(0, 2) === "FF") {
+
+                                    // Append each value to dropdown
+                                    $(`#FF-select-${m}`).append($(`<option value="${multipleFF[j]}">${multipleFF[j]}</option>`));
+                                }
+                            }
+                        } else {
+                            // Append value to dropdown
+                            $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
+                        }
+                    }
+                }
 
                 m++;
             });
@@ -55,6 +83,14 @@
                 }
             });
 
+            // When choosing Frequent Flyer
+            $('select[name=FF-select]').on('change', function () {
+                const dropdown = $(this),
+                    ff = dropdown.val();
+
+                addFrequentFlyer(dropdown, ff, copyArea);
+            });
+
             // Select all inputs
             $('#selectAll').on('click', selectAll);
 
@@ -65,12 +101,120 @@
         });
     };
 
+    function addFrequentFlyer(input, value, copyTarget) {
+
+        const id = input.attr('id').replace('FF-select-', ''),
+            checkBox = $(`input#member-${id}`),
+            label = checkBox.siblings('label').text(),
+            sabreSymbol = '§';
+
+        // If checkbox isn't checked, check it
+        if (checkBox.prop('checked') === false) {
+            checkBox.click();
+        }
+
+        // Loop through textbox items
+        for (let i = 0; i < textBox.length; i++) {
+
+            // If item in textbox matches label name
+            if (textBox[i].includes(label)) {
+
+                // If dropdown option is blank
+                if (value === "") {
+
+                    // If textboxt item has iteration
+                    if (textBox[i].includes('.1')) {
+
+                        // Replace FF and iteration with empty string
+                        textBox[i] = textBox[i].replace(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/, "");
+
+                    // Else
+                    } else {
+
+                        // Replace FF with empty string
+                        textBox[i] = textBox[i].replace(/FF[a-zA-Z]*[0-9]*§/, "");
+                    }
+
+                // Else
+                } else {
+
+                    // If items are iterated
+                    if (crewIteration > 2) {
+
+                        // Get iteration from textbox item
+                        let memberIteration = textBox[i].trim().split(/.+(?=\-\d+\.1)/);
+
+                        memberIteration = memberIteration[1].replace(sabreSymbol, "");
+
+                        const replacementText = textBox[i] + value + memberIteration + sabreSymbol;
+
+                        // Add Frequent flyer and iteration to text box
+                        if (/FF[a-zA-Z]*[0-9]*§/.test(textBox[i])) {
+
+                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0];
+                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0]);
+                            console.log(textBox[i].replace(ffId, replacementText));
+
+                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0], replacementText);
+
+                        } else if (/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/.test(textBox[i])) {
+
+                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0];
+                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0]);
+                            console.log(textBox[i].replace(ffId, replacementText));
+
+                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + memberIteration + sabreSymbol;
+                        }
+
+                    // Else
+                    } else {
+
+                        const replacementText = textBox[i] = textBox[i] + value + sabreSymbol;
+
+                        // Add Frequent Flyer to text box
+                        if (/FF[a-zA-Z]*[0-9]*§/.test(textBox[i])) {
+
+                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0];
+                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0]);
+                            console.log(textBox[i].replace(ffId, replacementText));
+
+                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0], replacementText);
+
+                        } else if (/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/.test(textBox[i])) {
+
+                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0];
+                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0]);
+                            console.log(textBox[i].replace(ffId, replacementText));
+
+                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + sabreSymbol;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Empty text area
+        copyTarget.text("");
+
+        // Add new text options
+        copyTarget.append(textBox);
+    }
+
     function formatInfo(input, info, copyTarget) {
 
         // Find inputs for members
         const emptyCopyArea = copyTarget.text() === '',
             id = input.attr('id'),
-            lineBreak = '\n';
+            lineBreak = '\n',
+            sabreSymbol = '§';
 
         let position = '';
 
@@ -81,8 +225,7 @@
         }
 
         // Start with Name
-        let sabreSymbol = '§',
-            sabreFormatting = '-' + Object.values(info[position])[0] + sabreSymbol;
+        let sabreFormatting = '-' + Object.values(info[position])[0] + sabreSymbol;
 
         // Loop through each value for that row
         $.each(info[position], function (key, value) {
