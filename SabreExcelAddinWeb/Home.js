@@ -105,6 +105,8 @@
 
         const id = input.attr('id').replace('FF-select-', ''),
             checkBox = $(`input#member-${id}`),
+            ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*[0-9].*[§]/),
+            ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*[0-9].*[-][0-9]*[\.]1[§]/u),
             label = checkBox.siblings('label').text(),
             sabreSymbol = '§';
 
@@ -119,24 +121,30 @@
             // If item in textbox matches label name
             if (textBox[i].includes(label)) {
 
+                let ffId = textBox[i].match(ffRegex)
+
                 // If dropdown option is blank
                 if (value === "") {
 
                     // If textboxt item has iteration
-                    if (textBox[i].includes('.1')) {
+                    if (ffIterRegex.test(textBox[i])) {
+
+                        ffId = textBox[i].match(ffIterRegex)
 
                         // Replace FF and iteration with empty string
-                        textBox[i] = textBox[i].replace(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/, "");
+                        textBox[i] = textBox[i].replace(ffId[0], sabreSymbol);
 
                     // Else
                     } else {
 
                         // Replace FF with empty string
-                        textBox[i] = textBox[i].replace(/FF[a-zA-Z]*[0-9]*§/, "");
+                        textBox[i] = textBox[i].replace(ffId[0], sabreSymbol);
                     }
 
                 // Else
                 } else {
+
+                    let replacementText = sabreSymbol + value + sabreSymbol;
 
                     // If items are iterated
                     if (crewIteration > 2) {
@@ -146,24 +154,18 @@
 
                         memberIteration = memberIteration[1].replace(sabreSymbol, "");
 
-                        const replacementText = textBox[i] + value + memberIteration + sabreSymbol;
+                        replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
 
                         // Add Frequent flyer and iteration to text box
-                        if (/FF[a-zA-Z]*[0-9]*§/.test(textBox[i])) {
+                        if (ffRegex.test(textBox[i])) {
 
-                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0];
-                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0]);
-                            console.log(textBox[i].replace(ffId, replacementText));
+                            textBox[i] = textBox[i].replace(ffId[0], replacementText);
 
-                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0], replacementText);
+                        } else if (ffIterRegex.test(textBox[i])) {
 
-                        } else if (/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/.test(textBox[i])) {
+                            ffId = textBox[i].match(ffIterRegex);
 
-                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0];
-                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0]);
-                            console.log(textBox[i].replace(ffId, replacementText));
-
-                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0], replacementText);
+                            textBox[i] = textBox[i].replace(ffId[0], replacementText);
 
                         } else {
 
@@ -173,24 +175,16 @@
                     // Else
                     } else {
 
-                        const replacementText = textBox[i] = textBox[i] + value + sabreSymbol;
-
                         // Add Frequent Flyer to text box
-                        if (/FF[a-zA-Z]*[0-9]*§/.test(textBox[i])) {
+                        if (ffRegex.test(textBox[i])) {
 
-                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0];
-                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0]);
-                            console.log(textBox[i].replace(ffId, replacementText));
+                            textBox[i] = textBox[i].replace(ffId[0], replacementText);
 
-                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*§/)[0], replacementText);
+                        } else if (ffIterRegex.test(textBox[i])) {
 
-                        } else if (/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/.test(textBox[i])) {
+                            ffId = textBox[i].match(ffIterRegex);
 
-                            const ffId = textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0];
-                            console.log(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0]);
-                            console.log(textBox[i].replace(ffId, replacementText));
-
-                            textBox[i] = textBox[i].replace(textBox[i].match(/FF[a-zA-Z]*[0-9]*[-][0-9]*[\.]1§/)[0], replacementText);
+                            textBox[i] = textBox[i].replace(ffId[0], replacementText);
 
                         } else {
 
