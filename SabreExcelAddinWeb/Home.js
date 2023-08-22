@@ -6,7 +6,6 @@
         - Add Refresh Button
         - Make Select All add everything to copyarea
         - Add Styling
-        - Add Toggle for Passport
         - Add Toggle for Meal Option:
         (AVMLA,BBMLA,BLMLA,CHMLA,DBMLA,FPMLA,GFMLA,HNMLA,KSMLA,LCMLA,LFMLA,LSMLA,MOMLA,NLMLA,NOMLA,RVMLA,SFMLA,SPMLA,VGMLA,VJMLA,VLMLA,VOMLA)
         - Add iteration toggle(Start with -2.1, -3.1, etc.)
@@ -31,7 +30,7 @@
             $.each(crewInfo, function (key, value) {
 
                 const memberName = value[0],
-                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div></div>`);
+                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"><div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div></div></div>`);
 
                 $('.crew-member-select-container').append(memberHtml);
 
@@ -60,6 +59,39 @@
                         } else {
                             // Append value to dropdown
                             $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
+                        }
+                    }
+
+                    // If value contains Passport
+                    if (value[i].includes("3DOCS/P/")) {
+
+                        // Remove any formatting inconsistencies
+                        const valueFormatted = value[i].replace("/ ", "");
+
+                        // Append Passport Container to Optional Items Container
+                        $(`.selection-${m} .optional-items`).append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+
+                        // If there are multiple Passports
+                        if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
+
+                            // Split Passports by space between each
+                            const multiplePassports = valueFormatted.split(/(?<=[a-zA-Z]*[0-9]*)[\s](?=3DOCS\/P\/)/g);
+
+                            // For each Passport
+                            for (let j = 0; j < multiplePassports.length; j++) {
+
+                                // Verify value is equal to Passport format
+                                if (multiplePassports[j].substring(0, 8) === "3DOCS/P/") {
+
+                                    // Add Passport as option
+                                    $(`#passport-select-${m}`).append(`<option value="${multiplePassports[j]}">${multiplePassports[j].substring(0, 11)}...</option>`);
+                                }
+                            }
+                        // Else
+                        } else {
+
+                            // Add Passport as option
+                            $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
                         }
                     }
                 }
@@ -91,6 +123,13 @@
                 addFrequentFlyer(dropdown, ff, copyArea);
             });
 
+            $('select[name=passport-select]').on('change', function () {
+                const dropdown = $(this),
+                    passport = dropdown.val();
+
+                addPassport(dropdown, passport, copyArea);
+            });
+
             // Select all inputs
             $('#selectAll').on('click', selectAll);
 
@@ -105,8 +144,8 @@
 
         const id = input.attr('id').replace('FF-select-', ''),
             checkBox = $(`input#member-${id}`),
-            ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*[0-9].*[§]/),
-            ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*[0-9].*[-][0-9]*[\.]1[§]/u),
+            ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*?(?=[§])./),
+            ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]*[\.]1[§]/),
             label = checkBox.siblings('label').text(),
             sabreSymbol = '§';
 
@@ -152,7 +191,7 @@
                         // Get iteration from textbox item
                         let memberIteration = textBox[i].trim().split(/.+(?=\-\d+\.1)/);
 
-                        memberIteration = memberIteration[1].replace(sabreSymbol, "");
+                        memberIteration.length > 1 ? memberIteration = memberIteration[1].replace(sabreSymbol, "") : memberIteration = "";
 
                         replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
 
@@ -202,6 +241,107 @@
         copyTarget.append(textBox);
     }
 
+    function addPassport(input, value, copyTarget) {
+
+        const id = input.attr('id').replace('passport-select-', ''),
+            checkBox = $(`input#member-${id}`),
+            label = checkBox.siblings('label').text(),
+            passportRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?(?=§)./),
+            passportIterRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?[-][0-9]*[\.]1[§]/),
+            sabreSymbol = '§';
+
+        // If checkbox isn't checked, check it
+        if (checkBox.prop('checked') === false) {
+            checkBox.click();
+        }
+
+        // Loop through textbox items
+        for (let i = 0; i < textBox.length; i++) {
+
+            // If item in textbox matches label name
+            if (textBox[i].includes(label)) {
+
+                let passportId = textBox[i].match(passportRegex)
+
+                // If dropdown option is blank
+                if (value === "") {
+
+                    // If textboxt item has iteration
+                    if (passportIterRegex.test(textBox[i])) {
+
+                        passportId = textBox[i].match(passportIterRegex)
+
+                        // Replace Passport and iteration with empty string
+                        textBox[i] = textBox[i].replace(passportId[0], sabreSymbol);
+
+                        // Else
+                    } else {
+
+                        // Replace Passport with empty string
+                        textBox[i] = textBox[i].replace(passportId[0], sabreSymbol);
+                    }
+
+                    // Else
+                } else {
+
+                    let replacementText = sabreSymbol + value + sabreSymbol;
+
+                    // If items are iterated
+                    if (crewIteration > 2) {
+
+                        // Get iteration from textbox item
+                        let memberIteration = textBox[i].trim().split(/.+(?=\-\d+\.1)/);
+
+                        memberIteration.length > 1 ? memberIteration = memberIteration[1].replace(sabreSymbol, "") : memberIteration = "";
+
+                        replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
+
+                        // Add Passport and iteration to text box
+                        if (passportRegex.test(textBox[i])) {
+
+                            textBox[i] = textBox[i].replace(passportId[0], replacementText);
+
+                        } else if (passportIterRegex.test(textBox[i])) {
+
+                            passportId = textBox[i].match(passportIterRegex);
+
+                            textBox[i] = textBox[i].replace(passportId[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + memberIteration + sabreSymbol;
+                        }
+
+                        // Else
+                    } else {
+
+                        // Add Passport to text box
+                        if (passportRegex.test(textBox[i])) {
+
+                            textBox[i] = textBox[i].replace(passportId[0], replacementText);
+
+                        } else if (passportIterRegex.test(textBox[i])) {
+
+                            passportId = textBox[i].match(passportIterRegex);
+
+                            textBox[i] = textBox[i].replace(passportId[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + sabreSymbol;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Empty text area
+        copyTarget.text("");
+
+        // Add new text options
+        copyTarget.append(textBox);
+    }
+
     function formatInfo(input, info, copyTarget) {
 
         // Find inputs for members
@@ -225,7 +365,7 @@
         $.each(info[position], function (key, value) {
 
             // If value contains the info we need
-            if (value.includes("3DOCS/DB") || value.includes("3CTCE") || value.includes("3CTCM") || value.includes("3DOCO") || value.includes("3DOCS/P/")) {
+            if (value.includes("3DOCS/DB") || value.includes("3CTCE") || value.includes("3CTCM") || value.includes("3DOCO")) {
 
                 // Append value to formatted string
                 emptyCopyArea ? sabreFormatting += value + sabreSymbol : sabreFormatting += value + '-' + crewIteration + '.1' + sabreSymbol;
@@ -320,7 +460,8 @@
     function removeInfo(input, copyTarget) {
 
         // Find info name
-        const needsRemoval = input.siblings('label').text(),
+        const id = input.attr('id').replace('member-', ''),
+            needsRemoval = input.siblings('label').text(),
             text = copyTarget.text();
 
         // If textbox includes name that's getting removed
@@ -341,6 +482,12 @@
                     newString.includes('.1') ? removedIteration = parseInt(newString.substring(0, newString.indexOf('1') + 1).trim().replace('-', '').replace('.1', '')) - 1 : removedIteration = 0;
                     // Remove string from array
                     textBox.splice(textBox.indexOf(textBox[i]), 1);
+
+                    // Clear out FF dropdown
+                    $(`#FF-select-${id}`).val('');
+
+                    // Clear out Passport dropdown
+                    $(`#passport-select-${id}`).val('');
                 }
             }
 
