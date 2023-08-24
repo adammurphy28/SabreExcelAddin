@@ -3,11 +3,7 @@
 
     // TODO
     /*
-        - Add Refresh Button
-        - Make Select All add everything to copyarea
         - Add Styling
-        - Add Toggle for Meal Option:
-        (AVMLA,BBMLA,BLMLA,CHMLA,DBMLA,FPMLA,GFMLA,HNMLA,KSMLA,LCMLA,LFMLA,LSMLA,MOMLA,NLMLA,NOMLA,RVMLA,SFMLA,SPMLA,VGMLA,VJMLA,VLMLA,VOMLA)
         - Add iteration toggle(Start with -2.1, -3.1, etc.)
     */
 
@@ -30,15 +26,22 @@
             $.each(crewInfo, function (key, value) {
 
                 const memberName = value[0],
-                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"><div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div></div></div>`);
+                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"></div></div>`);
 
                 $('.crew-member-select-container').append(memberHtml);
+
+                const optionalItems = $(`.selection-${m} .optional-items`);
 
                 // Loop through values
                 for (let i = 0; i < value.length; i++) {
 
                     // If value contain Frequent Flyer ID
                     if (/^FF.*$/.test(value[i])) {
+
+                        // If container does not exist
+                        if (!$(`#FF-select-${m}`).length > 0) {
+                            optionalItems.append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
+                        }
 
                         // If value contains multiple FF in one cell
                         if (/^FF.*FF.*$/.test(value[i])) {
@@ -69,7 +72,7 @@
                         const valueFormatted = value[i].replace("/ ", "");
 
                         // Append Passport Container to Optional Items Container
-                        $(`.selection-${m} .optional-items`).append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+                        optionalItems.append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
 
                         // If there are multiple Passports
                         if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
@@ -93,6 +96,12 @@
                             // Add Passport as option
                             $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
                         }
+                    }
+
+                    // If value contains Meal Preference
+                    if (/3[a-zA-z]{2}MLA/.test(value[i])) {
+
+                        optionalItems.append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
                     }
                 }
 
@@ -123,11 +132,26 @@
                 addFrequentFlyer(dropdown, ff, copyArea);
             });
 
+            // When choosing Meal Preference
+            $('input.meal-preference').on('click', function () {
+                const mealToggle = $(this),
+                    mealPreference = mealToggle.data('meal-preference');
+
+                addMealPreference(mealToggle, mealPreference, copyArea);
+            });
+
+            // When chooseing Passport
             $('select[name=passport-select]').on('change', function () {
                 const dropdown = $(this),
                     passport = dropdown.val();
 
                 addPassport(dropdown, passport, copyArea);
+            });
+
+            $('#reload').on('click', function (e) {
+                e.preventDefault();
+
+                location.reload();
             });
 
             // Select all inputs
@@ -145,7 +169,7 @@
         const id = input.attr('id').replace('FF-select-', ''),
             checkBox = $(`input#member-${id}`),
             ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*?(?=[§])./),
-            ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]*[\.]1[§]/),
+            ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
             label = checkBox.siblings('label').text(),
             sabreSymbol = '§';
 
@@ -160,7 +184,7 @@
             // If item in textbox matches label name
             if (textBox[i].includes(label)) {
 
-                let ffId = textBox[i].match(ffRegex)
+                let ffId = textBox[i].match(ffRegex);
 
                 // If dropdown option is blank
                 if (value === "") {
@@ -168,7 +192,7 @@
                     // If textboxt item has iteration
                     if (ffIterRegex.test(textBox[i])) {
 
-                        ffId = textBox[i].match(ffIterRegex)
+                        ffId = textBox[i].match(ffIterRegex);
 
                         // Replace FF and iteration with empty string
                         textBox[i] = textBox[i].replace(ffId[0], sabreSymbol);
@@ -241,13 +265,113 @@
         copyTarget.append(textBox);
     }
 
+    function addMealPreference(input, value, copyTarget) {
+        const id = input.attr('id').replace('meal-', ''),
+            checkBox = $(`input#member-${id}`),
+            mpRegex = new RegExp(/[§]3[a-zA-z]{2}MLA[§]/),
+            mpIterRegex = new RegExp(/[§]3[a-zA-z]{2}MLA[-][0-9]+[\.]1[§]/),
+            label = checkBox.siblings('label').text(),
+            sabreSymbol = '§';        
+
+        // If checkbox isn't checked, check it
+        if (checkBox.prop('checked') === false) {
+            checkBox.click();
+        }
+
+        // Loop through textbox items
+        for (let i = 0; i < textBox.length; i++) {
+
+            // If item in textbox matches label name
+            if (textBox[i].includes(label)) {
+
+                let mpId = textBox[i].match(mpRegex);
+
+                // If toggle is turned off
+                if (input.prop('checked') === false) {
+
+                    // If textboxt item has iteration
+                    if (mpIterRegex.test(textBox[i])) {
+
+                        mpId = textBox[i].match(mpIterRegex);
+
+                        // Replace MP and iteration with empty string
+                        textBox[i] = textBox[i].replace(mpId[0], sabreSymbol);
+
+                    // Else
+                    } else {
+
+                        // Replace MP with empty string
+                        textBox[i] = textBox[i].replace(mpId[0], sabreSymbol);
+                    }
+
+                // Else
+                } else {
+
+                    let replacementText = sabreSymbol + value + sabreSymbol;
+
+                    // If items are iterated
+                    if (crewIteration > 2) {
+
+                        // Get iteration from textbox item
+                        let memberIteration = textBox[i].trim().split(/.+(?=\-\d+\.1)/);
+
+                        memberIteration.length > 1 ? memberIteration = memberIteration[1].replace(sabreSymbol, "") : memberIteration = "";
+
+                        replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
+
+                        // Add Meal Preference and iteration to text box
+                        if (mpRegex.test(textBox[i])) {
+
+                            textBox[i] = textBox[i].replace(mpId[0], replacementText);
+
+                        } else if (mpIterRegex.test(textBox[i])) {
+
+                            mpId = textBox[i].match(mpIterRegex);
+
+                            textBox[i] = textBox[i].replace(mpId[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + memberIteration + sabreSymbol;
+                        }
+
+                        // Else
+                    } else {
+
+                        // Add Meal Preference to text box
+                        if (mpRegex.test(textBox[i])) {
+
+                            textBox[i] = textBox[i].replace(mpId[0], replacementText);
+
+                        } else if (mpIterRegex.test(textBox[i])) {
+
+                            mpId = textBox[i].match(mpIterRegex);
+
+                            textBox[i] = textBox[i].replace(mpId[0], replacementText);
+
+                        } else {
+
+                            textBox[i] = textBox[i] + value + sabreSymbol;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Empty text area
+        copyTarget.text("");
+
+        // Add new text options
+        copyTarget.append(textBox);
+    }
+
     function addPassport(input, value, copyTarget) {
 
         const id = input.attr('id').replace('passport-select-', ''),
             checkBox = $(`input#member-${id}`),
             label = checkBox.siblings('label').text(),
             passportRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?(?=§)./),
-            passportIterRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?[-][0-9]*[\.]1[§]/),
+            passportIterRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
             sabreSymbol = '§';
 
         // If checkbox isn't checked, check it
@@ -261,7 +385,7 @@
             // If item in textbox matches label name
             if (textBox[i].includes(label)) {
 
-                let passportId = textBox[i].match(passportRegex)
+                let passportId = textBox[i].match(passportRegex);
 
                 // If dropdown option is blank
                 if (value === "") {
@@ -269,7 +393,7 @@
                     // If textboxt item has iteration
                     if (passportIterRegex.test(textBox[i])) {
 
-                        passportId = textBox[i].match(passportIterRegex)
+                        passportId = textBox[i].match(passportIterRegex);
 
                         // Replace Passport and iteration with empty string
                         textBox[i] = textBox[i].replace(passportId[0], sabreSymbol);
@@ -486,6 +610,9 @@
                     // Clear out FF dropdown
                     $(`#FF-select-${id}`).val('');
 
+                    // Uncheck Meal Preference
+                    $(`#meal-${id}`).prop('checked', false);
+
                     // Clear out Passport dropdown
                     $(`#passport-select-${id}`).val('');
                 }
@@ -517,15 +644,9 @@
 
     function selectAll() {
 
-        $('.selection').each(function () {
+        $('.member').each(function () {
 
-            const input = $(this).find('input');
-
-            if ($('#selectAll').prop('checked') === true) {
-                input.prop('checked', true);
-            } else {
-                input.prop('checked', false);
-            }
+            $(this).click();
         });
     }
 
