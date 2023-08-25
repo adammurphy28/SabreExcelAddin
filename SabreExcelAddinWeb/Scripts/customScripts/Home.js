@@ -106,7 +106,8 @@
                 });
 
             } else {
-                $('<p class="error">Incorrect Formatting. Please add one column with "Name" (ex. LastName/FirstName MiddleName) and one column with birthday(ex. 3DOCS/DB/01JAN2023/G/LASTNAME/FIRSTNAME/MIDDLENAME)(Please substitute "G" in birthday for gender initial. M or F)</p>').append($('.crew-member-select-container'));
+                
+                $('<p class="error">Incorrect Formatting. Please add one column with "Name" (ex. LastName/FirstName MiddleName) and one column with birthday(ex. 3DOCS/DB/01JAN2023/G/LASTNAME/FIRSTNAME/MIDDLENAME)(Please substitute "G" in birthday for gender initial. M or F)</p>').insertBefore($('.copyArea'));
             }
 
             // When clicking member
@@ -653,47 +654,44 @@
 
                 let values = [];
 
-                if (correctFormat) {
+                // Loop through each cell in the row
+                $.each(rowValue, function (columnKey, columnValue) {
 
-                    // Loop through each cell in the row
-                    $.each(rowValue, function (columnKey, columnValue) {
+                    // If it's the first row and column value is equal to name
+                    if (rowKey === 0 && columnValue.toUpperCase() === "NAME") {
 
-                        // If it's the first row and column value is equal to name
-                        if (rowKey === 0 && columnValue.toUpperCase() === "NAME") {
+                        // Update Name Column Number
+                        nameColumn = columnKey;
 
-                            // Update Name Column Number
-                            nameColumn = columnKey;
-                        } else {
+                    }
 
-                            correctFormat = false;
+                    // If cell is not empty
+                    if (columnValue !== "" && columnValue !== null && columnValue !== '') {
 
-                            return false;
+                        // Transform everything to uppercase
+                        let valueFormatted = columnValue.toUpperCase();
+
+                        // Remove spaces at beginning of cell
+                        if (valueFormatted.charAt(0) === " ") {
+                            valueFormatted = valueFormatted.substring(1, valueFormatted.length);
                         }
 
-                        // If cell is not empty
-                        if (columnValue !== "" && columnValue !== null && columnValue !== '') {
-
-                            // Transform everything to uppercase
-                            let valueFormatted = columnValue.toUpperCase();
-
-                            // Remove spaces at beginning of cell
-                            if (valueFormatted.charAt(0) === " ") {
-                                valueFormatted = valueFormatted.substring(1, valueFormatted.length);
-                            }
-
-                            // Remove spaces at end of cell
-                            if (valueFormatted.charAt(valueFormatted.length) === " ") {
-                                valueFormatted = valueFormatted.substring(0, valueFormatted.length - 1);
-                            }
-
-                            // If current column is equal to name column, add value to beginning of array, else add to end
-                            columnKey === nameColumn ? values.unshift(valueFormatted) : values.push(valueFormatted);
+                        // Remove spaces at end of cell
+                        if (valueFormatted.charAt(valueFormatted.length) === " ") {
+                            valueFormatted = valueFormatted.substring(0, valueFormatted.length - 1);
                         }
-                    });
-                }
+
+                        // If current column is equal to name column, add value to beginning of array, else add to end
+                        columnKey === nameColumn ? values.unshift(valueFormatted) : values.push(valueFormatted);
+                    }
+                });
 
                 // Remove any section headers
-                if (values.length > 1 && !values.includes("NAME")) {
+                if (rowKey === 0 && !values.includes("NAME")) {
+                    correctFormat = false;
+
+                    return false;
+                } else if (values.length > 1 && !values.includes("NAME")) {
                     filteredItems[i] = values;
                     i++;
                 }

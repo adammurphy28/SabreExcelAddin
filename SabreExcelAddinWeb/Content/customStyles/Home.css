@@ -96,6 +96,7 @@ body {
 
 .error {
     color: #E50000!important;
+    word-break: break-all;
 }
 
 #first-selection {

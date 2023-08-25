@@ -28,7 +28,10 @@
     <Host Name="Workbook" />
   </Hosts>
   <DefaultSettings>
+	<!-- Live -->
     <SourceLocation DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Home.html" />
+	<!-- Testing -->
+	<!--<SourceLocation DefaultValue="~remoteAppUrl/Home.html" />-->
   </DefaultSettings>
   <!-- End TaskPane Mode integration.  -->
 
@@ -90,7 +93,10 @@
 			<bt:Image id="sabre_80x80" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Images/sabre_80x80.png"/>
 		</bt:Images>
 		<bt:Urls>
+			<!-- Live -->
 			<bt:Url id="Sabre.Taskpane.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Home.html" />
+			<!-- Testing -->
+			<!--<bt:Url id="Sabre.Taskpane.Url" DefaultValue="~remoteAppUrl/Home.html" />-->
 		</bt:Urls>
 		<!-- ShortStrings max characters==125. -->
 		<bt:ShortStrings>
