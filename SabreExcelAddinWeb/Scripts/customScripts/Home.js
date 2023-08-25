@@ -4,7 +4,8 @@
     const sabreSymbol = "§"
 
     // To account for more than 1 member per record
-    let crewIteration = 1,
+    let correctFormat = true,
+        crewIteration = 1,
         textBox = [];
 
     // The initialize function must be run each time a new page is loaded.
@@ -16,91 +17,97 @@
                 crewInfo = await getCrewInfo();
             let m = 0;
 
-            // Loop through filtered items
-            $.each(crewInfo, function (key, value) {
+            if (correctFormat) {
 
-                const memberName = value[0],
-                    memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div><input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div></div>`);
+                // Loop through filtered items
+                $.each(crewInfo, function (key, value) {
 
-                $('.crew-member-select-container').append(memberHtml);
+                    const memberName = value[0],
+                        memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div><input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div></div>`);
 
-                const optionalItems = $(`.selection-${m} .optional-items`);
+                    $('.crew-member-select-container').append(memberHtml);
 
-                // Loop through values
-                for (let i = 0; i < value.length; i++) {
+                    const optionalItems = $(`.selection-${m} .optional-items`);
 
-                    // If value contain Frequent Flyer ID
-                    if (/^FF.*$/.test(value[i])) {
+                    // Loop through values
+                    for (let i = 0; i < value.length; i++) {
 
-                        // If container does not exist
-                        if (!$(`#FF-select-${m}`).length > 0) {
-                            optionalItems.append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
-                        }
+                        // If value contain Frequent Flyer ID
+                        if (/^FF.*$/.test(value[i])) {
 
-                        // If value contains multiple FF in one cell
-                        if (/^FF.*FF.*$/.test(value[i])) {
-
-                            // Split value by whitespace
-                            const multipleFF = value[i].split(/[\s]/);
-
-                            // Loop through array of split values
-                            for (let j = 0; j < multipleFF.length; j++) {
-
-                                // If value starts with "FF"
-                                if (multipleFF[j].substring(0, 2) === "FF") {
-
-                                    // Append each value to dropdown
-                                    $(`#FF-select-${m}`).append($(`<option value="${multipleFF[j]}">${multipleFF[j]}</option>`));
-                                }
+                            // If container does not exist
+                            if (!$(`#FF-select-${m}`).length > 0) {
+                                optionalItems.append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
                             }
-                        } else {
-                            // Append value to dropdown
-                            $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
-                        }
-                    }
 
-                    // If value contains Passport
-                    if (value[i].includes("3DOCS/P/")) {
+                            // If value contains multiple FF in one cell
+                            if (/^FF.*FF.*$/.test(value[i])) {
 
-                        // Remove any formatting inconsistencies
-                        const valueFormatted = value[i].replace("/ ", "");
+                                // Split value by whitespace
+                                const multipleFF = value[i].split(/[\s]/);
 
-                        // Append Passport Container to Optional Items Container
-                        optionalItems.append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+                                // Loop through array of split values
+                                for (let j = 0; j < multipleFF.length; j++) {
 
-                        // If there are multiple Passports
-                        if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
+                                    // If value starts with "FF"
+                                    if (multipleFF[j].substring(0, 2) === "FF") {
 
-                            // Split Passports by space between each
-                            const multiplePassports = valueFormatted.split(/(?<=[a-zA-Z]*[0-9]*)[\s](?=3DOCS\/P\/)/g);
-
-                            // For each Passport
-                            for (let j = 0; j < multiplePassports.length; j++) {
-
-                                // Verify value is equal to Passport format
-                                if (multiplePassports[j].substring(0, 8) === "3DOCS/P/") {
-
-                                    // Add Passport as option
-                                    $(`#passport-select-${m}`).append(`<option value="${multiplePassports[j]}">${multiplePassports[j].substring(0, 11)}...</option>`);
+                                        // Append each value to dropdown
+                                        $(`#FF-select-${m}`).append($(`<option value="${multipleFF[j]}">${multipleFF[j]}</option>`));
+                                    }
                                 }
+                            } else {
+                                // Append value to dropdown
+                                $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
                             }
-                        // Else
-                        } else {
+                        }
 
-                            // Add Passport as option
-                            $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
+                        // If value contains Passport
+                        if (value[i].includes("3DOCS/P/")) {
+
+                            // Remove any formatting inconsistencies
+                            const valueFormatted = value[i].replace("/ ", "");
+
+                            // Append Passport Container to Optional Items Container
+                            optionalItems.append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+
+                            // If there are multiple Passports
+                            if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
+
+                                // Split Passports by space between each
+                                const multiplePassports = valueFormatted.split(/(?<=[a-zA-Z]*[0-9]*)[\s](?=3DOCS\/P\/)/g);
+
+                                // For each Passport
+                                for (let j = 0; j < multiplePassports.length; j++) {
+
+                                    // Verify value is equal to Passport format
+                                    if (multiplePassports[j].substring(0, 8) === "3DOCS/P/") {
+
+                                        // Add Passport as option
+                                        $(`#passport-select-${m}`).append(`<option value="${multiplePassports[j]}">${multiplePassports[j].substring(0, 11)}...</option>`);
+                                    }
+                                }
+                                // Else
+                            } else {
+
+                                // Add Passport as option
+                                $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
+                            }
+                        }
+
+                        // If value contains Meal Preference
+                        if (/3[a-zA-z]{2}MLA/.test(value[i])) {
+
+                            optionalItems.append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
                         }
                     }
 
-                    // If value contains Meal Preference
-                    if (/3[a-zA-z]{2}MLA/.test(value[i])) {
+                    m++;
+                });
 
-                        optionalItems.append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
-                    }
-                }
-
-                m++;
-            });
+            } else {
+                $('<p class="error">Incorrect Formatting. Please add one column with "Name" (ex. LastName/FirstName MiddleName) and one column with birthday(ex. 3DOCS/DB/01JAN2023/G/LASTNAME/FIRSTNAME/MIDDLENAME)(Please substitute "G" in birthday for gender initial. M or F)</p>').append($('.crew-member-select-container'));
+            }
 
             // When clicking member
             $('input.member').on('click', function () {
@@ -646,36 +653,44 @@
 
                 let values = [];
 
-                // Loop through each cell in the row
-                $.each(rowValue, function (columnKey, columnValue) {
+                if (correctFormat) {
 
-                    // If it's the first row and column value is equal to name
-                    if (rowKey === 0 && columnValue.toUpperCase() === "NAME") {
+                    // Loop through each cell in the row
+                    $.each(rowValue, function (columnKey, columnValue) {
 
-                        // Update Name Column Number
-                        nameColumn = columnKey;
-                    }
+                        // If it's the first row and column value is equal to name
+                        if (rowKey === 0 && columnValue.toUpperCase() === "NAME") {
 
-                    // If cell is not empty
-                    if (columnValue !== "" && columnValue !== null && columnValue !== '') {
+                            // Update Name Column Number
+                            nameColumn = columnKey;
+                        } else {
 
-                        // Transform everything to uppercase
-                        let valueFormatted = columnValue.toUpperCase();
+                            correctFormat = false;
 
-                        // Remove spaces at beginning of cell
-                        if (valueFormatted.charAt(0) === " ") {
-                            valueFormatted = valueFormatted.substring(1, valueFormatted.length);
+                            return false;
                         }
 
-                        // Remove spaces at end of cell
-                        if (valueFormatted.charAt(valueFormatted.length) === " ") {
-                            valueFormatted = valueFormatted.substring(0, valueFormatted.length - 1);
-                        }
+                        // If cell is not empty
+                        if (columnValue !== "" && columnValue !== null && columnValue !== '') {
 
-                        // If current column is equal to name column, add value to beginning of array, else add to end
-                        columnKey === nameColumn ? values.unshift(valueFormatted) : values.push(valueFormatted);
-                    }
-                });
+                            // Transform everything to uppercase
+                            let valueFormatted = columnValue.toUpperCase();
+
+                            // Remove spaces at beginning of cell
+                            if (valueFormatted.charAt(0) === " ") {
+                                valueFormatted = valueFormatted.substring(1, valueFormatted.length);
+                            }
+
+                            // Remove spaces at end of cell
+                            if (valueFormatted.charAt(valueFormatted.length) === " ") {
+                                valueFormatted = valueFormatted.substring(0, valueFormatted.length - 1);
+                            }
+
+                            // If current column is equal to name column, add value to beginning of array, else add to end
+                            columnKey === nameColumn ? values.unshift(valueFormatted) : values.push(valueFormatted);
+                        }
+                    });
+                }
 
                 // Remove any section headers
                 if (values.length > 1 && !values.includes("NAME")) {

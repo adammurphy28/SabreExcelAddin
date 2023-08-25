@@ -110,6 +110,8 @@
     <None Include="Scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="Content\customStyles\Home.css" />
     <Content Include="Home.html" />
+    <Content Include="Images\sabre_16x16.png" />
+    <Content Include="Images\sabre_80x80.png" />
     <Content Include="Scripts\customScripts\Home.js" />
     <Content Include="Images\sabre.png" />
     <Content Include="Scripts\jquery-3.6.0.js" />

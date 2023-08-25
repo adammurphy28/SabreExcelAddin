@@ -93,6 +93,10 @@ body {
     padding: 20px;
 }
 
+.error {
+    color: #E50000!important;
+}
+
 #first-selection {
     position: relative;
 }

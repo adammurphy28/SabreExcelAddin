@@ -13,11 +13,12 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="SabreExcelAddin" />
   <Description DefaultValue="An office add in intended for formatting information for Sabre CLI"/>
-  <IconUrl DefaultValue="~remoteAppUrl/Images/sabre.png" />
-  <SupportUrl DefaultValue="https://murphsconsulting.com" />
+  <IconUrl DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Images/sabre.png" />
+  <SupportUrl DefaultValue="https://github.com/adammurphy28/SabreExcelAddin/issues" />
   <!-- Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then have an href link, navigation will only be allowed if the domain is on this list. -->
   <AppDomains>
-    <AppDomain>AppDomain1</AppDomain>
+    <AppDomain>github.io</AppDomain>
+	<AppDomain>github.com</AppDomain>
   </AppDomains>
   <!--End Basic Settings. -->
   
@@ -26,7 +27,7 @@
     <Host Name="Workbook" />
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="~remoteAppUrl/Home.html" />
+    <SourceLocation DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Home.html" />
   </DefaultSettings>
   <!-- End TaskPane Mode integration.  -->
 
@@ -44,35 +45,35 @@
             <!-- Use OfficeTab to extend an existing Tab. Use CustomTab to create a new tab. -->
             <OfficeTab id="TabHome">
               <!-- Ensure you provide a unique id for the group. Recommendation for any IDs is to namespace using your company name. -->
-              <Group id="Murphs.Group1">
-                <Label resid="Murphs.Group1Label" />
+              <Group id="Sabre.Group">
+                <Label resid="Sabre.GroupLabel" />
                 <!-- Icons. Required sizes 16,32,80, optional 20, 24, 40, 48, 64. Strongly recommended to provide all sizes for great UX. -->
                 <!-- Use PNG icons. All URLs on the resources section must use HTTPS. -->
                 <Icon>
-                  <bt:Image size="16" resid="Murphs.tpicon_16x16" />
-                  <bt:Image size="32" resid="Murphs.tpicon_32x32" />
-                  <bt:Image size="80" resid="Murphs.tpicon_80x80" />
+                  <bt:Image size="16" resid="sabre_16x16" />
+                  <bt:Image size="32" resid="sabre_32x32" />
+                  <bt:Image size="80" resid="sabre_80x80" />
                 </Icon>
                 <!-- Control. It can be of type "Button" or "Menu". -->
-                <Control xsi:type="Button" id="Murphs.TaskpaneButton">
-                  <Label resid="Murphs.TaskpaneButton.Label" />
+                <Control xsi:type="Button" id="Sabre.TaskpaneButton">
+                  <Label resid="Sabre.TaskpaneButton.Label" />
                   <Supertip>
                     <!-- ToolTip title. resid must point to a ShortString resource. -->
-                    <Title resid="Murphs.TaskpaneButton.Label" />
+                    <Title resid="Sabre.TaskpaneButton.Label" />
                     <!-- ToolTip description. resid must point to a LongString resource. -->
-                    <Description resid="Murphs.TaskpaneButton.Tooltip" />
+                    <Description resid="Sabre.TaskpaneButton.Tooltip" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Murphs.tpicon_16x16" />
-                    <bt:Image size="32" resid="Murphs.tpicon_32x32" />
-                    <bt:Image size="80" resid="Murphs.tpicon_80x80" />
+                    <bt:Image size="16" resid="sabre_16x16" />
+                    <bt:Image size="32" resid="sabre_32x32" />
+                    <bt:Image size="80" resid="sabre_80x80" />
                   </Icon>
 
                   <!-- This is what happens when the command is triggered (E.g. click on the Ribbon). Supported actions are ExecuteFunction or ShowTaskpane. -->
                   <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>ButtonId1</TaskpaneId>
+                    <TaskpaneId>SabreButtonId</TaskpaneId>
                     <!-- Provide a URL resource id for the location that will be displayed on the task pane. -->
-                    <SourceLocation resid="MurphsConsulting.Taskpane.Url" />
+                    <SourceLocation resid="Sabre.Taskpane.Url" />
                   </Action>
                 </Control>
               </Group>
@@ -81,5 +82,23 @@
         </DesktopFormFactor>
       </Host>
     </Hosts>
+	<Resources>
+		<bt:Images>
+			<bt:Image id="sabre_16x16" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Images/sabre_16x16.png"/>
+			<bt:Image id="sabre_32x32" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Images/sabre.png"/>
+			<bt:Image id="sabre_80x80" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Images/sabre_80x80.png"/>
+		</bt:Images>
+		<bt:Urls>
+			<bt:Url id="Sabre.Taskpane.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/Home.html" />
+		</bt:Urls>
+		<!-- ShortStrings max characters==125. -->
+		<bt:ShortStrings>
+			<bt:String id="Sabre.TaskpaneButton.Label" DefaultValue="Open Sabre Formatting Add-in" />
+		</bt:ShortStrings>
+		<!-- LongStrings max characters==250. -->
+		<bt:LongStrings>
+			<bt:String id="Sabre.TaskpaneButton.Tooltip" DefaultValue="Format text for Sabre CLI" />
+		</bt:LongStrings>
+	</Resources>
   </VersionOverrides>
 </OfficeApp>
