@@ -4,8 +4,9 @@
     // TODO
     /*
         - Add Styling
-        - Add iteration toggle(Start with -2.1, -3.1, etc.)
     */
+
+    const sabreSymbol = "§"
 
     // To account for more than 1 member per record
     let crewIteration = 1,
@@ -19,8 +20,6 @@
             const copyArea = $('.copyArea'),
                 crewInfo = await getCrewInfo();
             let m = 0;
-
-            console.log(crewInfo);
 
             // Loop through filtered items
             $.each(crewInfo, function (key, value) {
@@ -124,6 +123,14 @@
                 }
             });
 
+            // When changing iteration
+            $('select[name=iteration-value]').on('change', function () {
+                const dropdown = $(this),
+                    iterationValue = dropdown.val();
+
+                changeStartingIteration(iterationValue, copyArea);
+            });
+
             // When choosing Frequent Flyer
             $('select[name=FF-select]').on('change', function () {
                 const dropdown = $(this),
@@ -148,11 +155,15 @@
                 addPassport(dropdown, passport, copyArea);
             });
 
+            // Reload Button functionality
             $('#reload').on('click', function (e) {
                 e.preventDefault();
 
                 location.reload();
             });
+
+            // Deselect all inputs
+            $('#deselectAll').on('click', deselectAll);
 
             // Select all inputs
             $('#selectAll').on('click', selectAll);
@@ -170,8 +181,7 @@
             checkBox = $(`input#member-${id}`),
             ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*?(?=[§])./),
             ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
-            label = checkBox.siblings('label').text(),
-            sabreSymbol = '§';
+            label = checkBox.siblings('label').text();
 
         // If checkbox isn't checked, check it
         if (checkBox.prop('checked') === false) {
@@ -270,8 +280,7 @@
             checkBox = $(`input#member-${id}`),
             mpRegex = new RegExp(/[§]3[a-zA-z]{2}MLA[§]/),
             mpIterRegex = new RegExp(/[§]3[a-zA-z]{2}MLA[-][0-9]+[\.]1[§]/),
-            label = checkBox.siblings('label').text(),
-            sabreSymbol = '§';        
+            label = checkBox.siblings('label').text();        
 
         // If checkbox isn't checked, check it
         if (checkBox.prop('checked') === false) {
@@ -371,8 +380,7 @@
             checkBox = $(`input#member-${id}`),
             label = checkBox.siblings('label').text(),
             passportRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?(?=§)./),
-            passportIterRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
-            sabreSymbol = '§';
+            passportIterRegex = new RegExp(/[§]3DOCS\/P\/[a-zA-Z].*?[-][0-9]+[\.]1[§]/);
 
         // If checkbox isn't checked, check it
         if (checkBox.prop('checked') === false) {
@@ -466,13 +474,103 @@
         copyTarget.append(textBox);
     }
 
+    function changeStartingIteration(value, copyTarget) {
+
+        // Regex for -X.1
+        const iterationRegex = new RegExp(/[-][0-9]+[\.]1[§]/g);
+
+        // New iteration count
+        let newIteration = value;
+
+        // If value is empty
+        if (value === "") {
+
+            // Set iteration to 1
+            newIteration = 1;
+        }
+
+        // If textarea is empty, set iteration to current value
+        if (copyTarget.text() === '') {
+
+            crewIteration = value;
+
+        } else {
+
+            // Loop through textbox items
+            for (let i = 0; i < textBox.length; i++) {
+
+                // Setting format with new iteration
+                const newFormat = `-${newIteration}.1${sabreSymbol}`;
+
+                // If first item in loop
+                if (i === 0) {
+
+                    // If iteration count is equal to 1
+                    if (newIteration === 1) {
+
+                        // Replace any previous iterations with nothing
+                        textBox[i] = textBox[i].replaceAll(iterationRegex, sabreSymbol).replace("\n", "");
+
+                    // Else
+                    } else {
+
+                        // Split string starting with the name
+                        let name = textBox[i].trim().split(sabreSymbol, 1),
+                            newString = textBox[i].replace(name + sabreSymbol, "");
+
+                        // Test string for regex and replace all iteration symbols if matches
+                        iterationRegex.test(newString) ? newString = newString.replaceAll(iterationRegex, newFormat).replace("\n", "") : newString = newString.replaceAll(sabreSymbol, newFormat).replace("\n", "");
+
+                        // Add new string to array
+                        textBox[i] = name + sabreSymbol + newString;
+                    }
+
+                // Else
+                } else {
+
+                    // Replace all iterations with new format
+                    textBox[i] = textBox[i].replaceAll(iterationRegex, newFormat);
+
+                }
+
+                // Increase iteration
+                newIteration++;
+            }
+
+            // Replace crewIteration with new iteration
+            crewIteration = newIteration;
+        }
+
+        // Empty text area
+        copyTarget.text("");
+
+        // Add new text options
+        copyTarget.append(textBox);
+    }
+
+    function deselectAll(event) {
+        event.preventDefault();
+
+        // Loop through items
+        $('.member').each(function () {
+
+            const member = $(this);
+
+            // If item is checked
+            if (member.prop('checked') === true) {
+
+                // Click to uncheck
+                member.click();
+            }
+        });
+    }
+
     function formatInfo(input, info, copyTarget) {
 
         // Find inputs for members
         const emptyCopyArea = copyTarget.text() === '',
             id = input.attr('id'),
-            lineBreak = '\n',
-            sabreSymbol = '§';
+            lineBreak = '\n';
 
         let position = '';
 
@@ -492,7 +590,7 @@
             if (value.includes("3DOCS/DB") || value.includes("3CTCE") || value.includes("3CTCM") || value.includes("3DOCO")) {
 
                 // Append value to formatted string
-                emptyCopyArea ? sabreFormatting += value + sabreSymbol : sabreFormatting += value + '-' + crewIteration + '.1' + sabreSymbol;
+                emptyCopyArea && crewIteration === 1 ? sabreFormatting += value + sabreSymbol : sabreFormatting += value + '-' + crewIteration + '.1' + sabreSymbol;
             }
         });
 
@@ -585,6 +683,7 @@
 
         // Find info name
         const id = input.attr('id').replace('member-', ''),
+            iterationRegex = new RegExp(/[-][0-9]+[\.]1[§]/g),
             needsRemoval = input.siblings('label').text(),
             text = copyTarget.text();
 
@@ -594,7 +693,7 @@
             let newString = '',
                 removedIteration = '';
 
-            // Loop through textbox
+            // Loop through textbox to get current iteration from where item is removed
             for (let i = 0; i < textBox.length; i++) {
 
                 // If textbox item includes name
@@ -603,7 +702,7 @@
                     // Clear everything except -X.1
                     newString = textBox[i].replace(/.+(?=\-\d+\.1)/, '');
                     // If new string includes .1, trim string to number, else, set iteration to 0
-                    newString.includes('.1') ? removedIteration = parseInt(newString.substring(0, newString.indexOf('1') + 1).trim().replace('-', '').replace('.1', '')) - 1 : removedIteration = 0;
+                    newString.includes('.1') ? removedIteration = parseInt(newString.substring(0, newString.indexOf('1') + 1).trim().replace('-', '').replace('.1', '')) : removedIteration = 2;
                     // Remove string from array
                     textBox.splice(textBox.indexOf(textBox[i]), 1);
 
@@ -618,16 +717,40 @@
                 }
             }
 
-            // Loop through textbox again with new iteration
-            for (let j = removedIteration; j < textBox.length; j++) {
+            let iteration = removedIteration;
 
-                // If iteration starts at 0, clear first iteration
-                if (j === 0) {
-                    textBox[j] = textBox[j].replaceAll('-2.1', '').replace('\n', '');
+            // Loop through textbox again with new iteration
+            for (let j = 0; j < textBox.length; j++) {
+
+                // Set new iteration format
+                let newIteration = "-" + iteration + ".1" + sabreSymbol;
+
+                // If old iteration is -2.1
+                if (iteration === 2) {
+
+                    // Replace old iteration with empty string
+                    textBox[j] = textBox[j].replaceAll('-2.1' + sabreSymbol, sabreSymbol).replace('\n', '');
+
+                    // Increase iteration if successful
+                    iteration++;
 
                 // Else replace text with correct iteration
-                } else {
-                    textBox[j] = textBox[j].replaceAll("-" + (j + 2) + ".1", "-" + (j + 1) + ".1");
+                }
+                else {
+
+                    // Replace everything that isn't -X.1 with empty string then parse for "X"
+                    let currentString = textBox[j].replace(/.+(?=\-\d+\.1)/, ''),
+                        testNumber = parseInt(currentString.substring(0, currentString.indexOf('1') + 1).trim().replace('-', '').replace('.1', ''));
+
+                    // If current iteration is less than number above
+                    if (iteration < testNumber) {
+
+                        // Replace previous iteration with new iteration
+                        textBox[j] = textBox[j].replaceAll(iterationRegex, newIteration);
+
+                        // Increase iteration if successful
+                        iteration++;
+                    }
                 }
             };
 

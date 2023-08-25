@@ -14,11 +14,29 @@
 <body class="ms-font-m ms-welcome">
     <div class="crew-member-select-container">
         <div class="selection">
-            <div class="selectAll-container">
-                <input id="selectAll" name="selectAll" type="checkbox" />
-                <label for="selectAll">Select All</label>
+            <a id="reload" href="#reload">Reload</a>
+            <div class="all-options">
+                <div class="iteration-container">
+                    <label for="iteration-value">Choose Starting Iteration:</label>
+                    <select id="iteration-value" name="iteration-value">
+                        <option value="">-</option>
+                        <option value="2">-2.1</option>
+                        <option value="3">-3.1</option>
+                        <option value="4">-4.1</option>
+                        <option value="5">-5.1</option>
+                        <option value="6">-6.1</option>
+                        <option value="7">-7.1</option>
+                        <option value="8">-8.1</option>
+                        <option value="9">-9.1</option>
+                        <option value="10">-10.1</option>
+                    </select>
+                </div>
+                <div class="selectAll-container">
+                    <input id="selectAll" name="selectAll" type="checkbox" />
+                    <label for="selectAll">Select All</label>
+                </div>
+                <a id="deselectAll" href="#deselectAll">Deselect All</a>
             </div>
-            <a id="reload" href="#">Reload</a>
         </div>
     </div>
     <textarea class="copyArea" readonly></textarea>
