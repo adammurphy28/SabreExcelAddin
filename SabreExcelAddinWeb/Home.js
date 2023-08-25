@@ -168,6 +168,12 @@
             // Select all inputs
             $('#selectAll').on('click', selectAll);
 
+            //Scroll to Bottom
+            $('#toBottom').on('click', scrollToBottom);
+
+            // Scroll to Top
+            $('#toTop').on('click', scrollToTop);
+
             // Copy text from textarea on click
             copyArea.on('click', function () {
                 navigator.clipboard.writeText($(this).text());
@@ -551,18 +557,24 @@
     function deselectAll(event) {
         event.preventDefault();
 
-        // Loop through items
-        $('.member').each(function () {
+        if ($('#selectAll').prop('checked') === true) {
 
-            const member = $(this);
+            $('#selectAll').click();
+        } else {
 
-            // If item is checked
-            if (member.prop('checked') === true) {
+            // Loop through items
+            $('.member').each(function () {
 
-                // Click to uncheck
-                member.click();
-            }
-        });
+                const member = $(this);
+
+                // If item is checked
+                if (member.prop('checked') === true) {
+
+                    // Click to uncheck
+                    member.click();
+                }
+            });
+        }
     }
 
     function formatInfo(input, info, copyTarget) {
@@ -622,21 +634,29 @@
             await context.sync();
 
             const cellsWithText = usedCells.text;
-            let i = 0;
+            let i = 0,
+                nameColumn = 0;
 
             // Loop through each row
-            $.each(cellsWithText, function (key, value) {
+            $.each(cellsWithText, function (rowKey, rowValue) {
 
                 let values = [];
 
                 // Loop through each cell in the row
-                $.each(value, function (key, nextValue) {
+                $.each(rowValue, function (columnKey, columnValue) {
+
+                    // If it's the first row and column value is equal to name
+                    if (rowKey === 0 && columnValue.toUpperCase() === "NAME") {
+
+                        // Update Name Column Number
+                        nameColumn = columnKey;
+                    }
 
                     // If cell is not empty
-                    if (nextValue !== "" && nextValue !== null && nextValue !== '') {
+                    if (columnValue !== "" && columnValue !== null && columnValue !== '') {
 
                         // Transform everything to uppercase
-                        let valueFormatted = nextValue.toUpperCase();
+                        let valueFormatted = columnValue.toUpperCase();
 
                         // Remove spaces at beginning of cell
                         if (valueFormatted.charAt(0) === " ") {
@@ -648,8 +668,8 @@
                             valueFormatted = valueFormatted.substring(0, valueFormatted.length - 1);
                         }
 
-                        // Pushed formatted string to array
-                        values.push(valueFormatted);
+                        // If current column is equal to name column, add value to beginning of array, else add to end
+                        columnKey === nameColumn ? values.unshift(valueFormatted) : values.push(valueFormatted);
                     }
                 });
 
@@ -763,6 +783,20 @@
         }
 
         return true;
+    }
+
+    function scrollToBottom(event) {
+        event.preventDefault();
+
+        const height = $('body').height();
+
+        $('html, body').animate({ scrollTop: height }, "fast");
+    }
+
+    function scrollToTop(event) {
+        event.preventDefault();
+
+        $('html, body').animate({ scrollTop: 0 }, "fast");
     }
 
     function selectAll() {
