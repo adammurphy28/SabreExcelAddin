@@ -107,14 +107,10 @@
     <Content Include="Content\sass\Fabric.scss" />
     <Content Include="Content\sass\Fabric.Scoped.scss" />
     <None Include="Scripts\jquery-3.6.0.intellisense.js" />
-    <Content Include="Home.css" />
+    <Content Include="Content\customStyles\Home.css" />
     <Content Include="Home.html" />
-    <Content Include="Home.js" />
-    <Content Include="Images\AddinIcon.png" />
-    <Content Include="Images\Button16x16.png" />
-    <Content Include="Images\Button32x32.png" />
-    <Content Include="Images\Button80x80.png" />
-    <Content Include="Images\Close.png" />
+    <Content Include="Scripts\customScripts\Home.js" />
+    <Content Include="Images\sabre.png" />
     <Content Include="Scripts\jquery-3.6.0.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />
     <Content Include="Scripts\jquery-3.6.0.slim.js" />
@@ -581,6 +577,7 @@
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

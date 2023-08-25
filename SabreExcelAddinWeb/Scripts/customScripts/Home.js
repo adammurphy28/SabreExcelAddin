@@ -1,11 +1,6 @@
 ﻿(function ($) {
     "use strict";
 
-    // TODO
-    /*
-        - Add Styling
-    */
-
     const sabreSymbol = "§"
 
     // To account for more than 1 member per record
@@ -25,7 +20,7 @@
             $.each(crewInfo, function (key, value) {
 
                 const memberName = value[0],
-                    memberHtml = $(`<div class="selection selection-${m}"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label><div class="optional-items"></div></div>`);
+                    memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div><input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div></div>`);
 
                 $('.crew-member-select-container').append(memberHtml);
 
@@ -109,17 +104,26 @@
 
             // When clicking member
             $('input.member').on('click', function () {
-                const member = $(this);
+                const member = $(this),
+                    optionalItems = member.parents('.selection').children('.optional-items-dropdown');
 
                 // If member is checked
                 if (member.is(':checked')) {
                     // Add member to textbox and increase iteration
                     if (formatInfo(member, crewInfo, copyArea)) crewIteration++;
 
+                    if (!optionalItems.is(':checked')) {
+                        optionalItems.click();
+                    }
+
                 // Else
                 } else {
                     // Remove member from textbox and decrease iteration
                     if (removeInfo(member, copyArea)) crewIteration--;
+
+                    if (optionalItems.is(':checked')) {
+                        optionalItems.click();
+                    }
                 }
             });
 
