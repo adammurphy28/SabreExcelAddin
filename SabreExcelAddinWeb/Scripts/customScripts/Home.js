@@ -11,7 +11,7 @@
     // The initialize function must be run each time a new page is loaded.
     Office.initialize = function () {
 
-        Office.on('ready', async function () {
+        $(document).ready(async function () {
 
             const copyArea = $('.copyArea'),
                 crewInfo = await getCrewInfo();
