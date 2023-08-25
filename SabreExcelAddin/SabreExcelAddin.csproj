@@ -21,7 +21,8 @@
     <ProjectMode>OfficeApp</ProjectMode>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <MinimumOfficeToolsVersion>14.0</MinimumOfficeToolsVersion>
-    <ActivePublishProfile>Murph%27s Consulting</ActivePublishProfile>
+    <ActivePublishProfile>
+    </ActivePublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,7 +44,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Maggie Rogers.xlsx" />
     <None Include="SabreExcelAddinManifest\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{2eeee170-028d-4c8c-9595-d93a7420b545}</SharePointProjectItemId>
     </None>
