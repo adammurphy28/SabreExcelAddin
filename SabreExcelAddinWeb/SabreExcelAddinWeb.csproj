@@ -106,11 +106,11 @@
     <Content Include="Content\sass\mixins\_Animation.Mixins.scss" />
     <Content Include="Content\sass\Fabric.scss" />
     <Content Include="Content\sass\Fabric.Scoped.scss" />
-    <None Include="Properties\PublishProfiles\Murph%27s Consulting.pubxml" />
     <None Include="Scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="Content\customStyles\Home.css" />
     <Content Include="Home.html" />
     <Content Include="Images\sabre_16x16.png" />
+    <Content Include="Images\sabre_64x64.png" />
     <Content Include="Images\sabre_80x80.png" />
     <Content Include="Scripts\customScripts\Home.js" />
     <Content Include="Images\sabre.png" />

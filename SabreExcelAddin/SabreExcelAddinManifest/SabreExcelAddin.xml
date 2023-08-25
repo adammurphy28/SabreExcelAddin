@@ -14,11 +14,12 @@
   <DisplayName DefaultValue="SabreExcelAddin" />
   <Description DefaultValue="An office add in intended for formatting information for Sabre CLI"/>
   <IconUrl DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Images/sabre.png" />
+  <HighResolutionIconUrl DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Images/sabre_64x64.png" />
   <SupportUrl DefaultValue="https://github.com/adammurphy28/SabreExcelAddin/issues" />
   <!-- Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then have an href link, navigation will only be allowed if the domain is on this list. -->
   <AppDomains>
-    <AppDomain>github.io</AppDomain>
-	<AppDomain>github.com</AppDomain>
+    <AppDomain>https://adammurphy28.github.io</AppDomain>
+	<AppDomain>https://github.com</AppDomain>
   </AppDomains>
   <!--End Basic Settings. -->
   
