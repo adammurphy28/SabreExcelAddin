@@ -41,20 +41,6 @@
     <Hosts>
       <Host xsi:type="Workbook">
         <DesktopFormFactor>
-		<!--"This code enables a customizable message to be displayed when the add-in is loaded successfully upon individual install."-->
-		<GetStarted>
-			<!-- Title of the Getting Started callout. The resid attribute points to a ShortString resource -->
-			<Title resid="Contoso.GetStarted.Title"/>
-
-			<!-- Description of the Getting Started callout. resid points to a LongString resource -->
-			<Description resid="Contoso.GetStarted.Description"/>
-
-			<!-- Points to a URL resource which details how the add-in should be used. -->
-			<LearnMoreUrl resid="Contoso.GetStarted.LearnMoreUrl"/>
-		</GetStarted>
-		<!-- Function file is a HTML page that includes the JavaScript where functions for ExecuteAction will be called. 
-        Think of the FunctionFile as the code behind ExecuteFunction. -->
-		<FunctionFile resid="Contoso.DesktopFunctionFile.Url" />
           <!-- PrimaryCommandSurface is the main Office Ribbon. -->
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <!-- Use OfficeTab to extend an existing Tab. Use CustomTab to create a new tab. -->
@@ -104,19 +90,15 @@
 			<bt:Image id="sabre_80x80" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Images/sabre_80x80.png"/>
 		</bt:Images>
 		<bt:Urls>
-			<bt:Url id="Contoso.DesktopFunctionFile.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Functions/FunctionFile.html" />
 			<bt:Url id="Sabre.Taskpane.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Home.html" />
-			<bt:Url id="Contoso.GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
 		</bt:Urls>
 		<!-- ShortStrings max characters==125. -->
 		<bt:ShortStrings>
 			<bt:String id="Sabre.TaskpaneButton.Label" DefaultValue="Open Sabre Formatting Add-in" />
-			<bt:String id="Contoso.GetStarted.Title" DefaultValue="Get started with your sample add-in!" />
 		</bt:ShortStrings>
 		<!-- LongStrings max characters==250. -->
 		<bt:LongStrings>
 			<bt:String id="Sabre.TaskpaneButton.Tooltip" DefaultValue="Format text for Sabre CLI" />
-			<bt:String id="Contoso.GetStarted.Description" DefaultValue="Your sample add-in loaded succesfully. Go to the HOME tab and click the 'Show Taskpane' button to get started." />
 		</bt:LongStrings>
 	</Resources>
   </VersionOverrides>
