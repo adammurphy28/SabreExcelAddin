@@ -106,6 +106,7 @@
 		<bt:Urls>
 			<bt:Url id="Contoso.DesktopFunctionFile.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Functions/FunctionFile.html" />
 			<bt:Url id="Sabre.Taskpane.Url" DefaultValue="https://adammurphy28.github.io/SabreExcelAddin/SabreExcelAddinWeb/Home.html" />
+			<bt:Url id="Contoso.GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
 		</bt:Urls>
 		<!-- ShortStrings max characters==125. -->
 		<bt:ShortStrings>
