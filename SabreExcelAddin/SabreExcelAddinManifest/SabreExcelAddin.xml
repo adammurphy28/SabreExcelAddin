@@ -95,6 +95,7 @@
 		<!-- ShortStrings max characters==125. -->
 		<bt:ShortStrings>
 			<bt:String id="Sabre.TaskpaneButton.Label" DefaultValue="Open Sabre Formatting Add-in" />
+			<bt:String id="Sabre.GroupLabel" DefaultValue="Sabre Group" />
 		</bt:ShortStrings>
 		<!-- LongStrings max characters==250. -->
 		<bt:LongStrings>
