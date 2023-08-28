@@ -279,6 +279,7 @@ label[for=all-options-dropdown]:after {
 .optional-items {
     flex-direction: column;
     gap: 10px;
+    width: 100%;
 }
 
 .passport-container,

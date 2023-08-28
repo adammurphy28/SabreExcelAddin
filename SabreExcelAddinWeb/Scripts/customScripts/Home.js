@@ -23,11 +23,13 @@
                 $.each(crewInfo, function (key, value) {
 
                     const memberName = value[0],
-                        memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div><input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div></div>`);
+                        memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div></div>`);
 
                     $('.crew-member-select-container').append(memberHtml);
 
-                    const optionalItems = $(`.selection-${m} .optional-items`);
+                    const currentSelection = $(`.selection-${m}`),
+                        containsOptional = $(`.selection-${m} .optional-items`),
+                        optionalItems = $(`<input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div>`);
 
                     // Loop through values
                     for (let i = 0; i < value.length; i++) {
@@ -35,9 +37,14 @@
                         // If value contain Frequent Flyer ID
                         if (/^FF.*$/.test(value[i])) {
 
+                            // If selection member does not contain optional items dropdown
+                            if (!containsOptional.length > 0) {
+                                currentSelection.append(optionalItems);
+                            }
+
                             // If container does not exist
                             if (!$(`#FF-select-${m}`).length > 0) {
-                                optionalItems.append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
+                                $(`.selection-${m} .optional-items`).append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
                             }
 
                             // If value contains multiple FF in one cell
@@ -68,8 +75,13 @@
                             // Remove any formatting inconsistencies
                             const valueFormatted = value[i].replace("/ ", "");
 
+                            // If selection member does not contain optional items dropdown
+                            if (!containsOptional.length > 0) {
+                                currentSelection.append(optionalItems);
+                            }
+
                             // Append Passport Container to Optional Items Container
-                            optionalItems.append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+                            $(`.selection-${m} .optional-items`).append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
 
                             // If there are multiple Passports
                             if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
@@ -98,7 +110,12 @@
                         // If value contains Meal Preference
                         if (/3[a-zA-z]{2}MLA/.test(value[i])) {
 
-                            optionalItems.append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
+                            // If selection member does not contain optional items dropdown
+                            if (!containsOptional.length > 0) {
+                                currentSelection.append(optionalItems);
+                            }
+
+                            $(`.selection-${m} .optional-items`).append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
                         }
                     }
 
