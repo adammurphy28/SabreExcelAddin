@@ -720,6 +720,10 @@
             }
         });
 
+        const sortedItems = Object.values(filteredItems).sort();
+
+        filteredItems = sortedItems;
+
         return filteredItems;
     }
 
