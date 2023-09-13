@@ -29,7 +29,16 @@
 
                     const currentSelection = $(`.selection-${m}`),
                         containsOptional = $(`.selection-${m} .optional-items`),
+                        firstChar = memberName.charAt(0),
+                        letterNav = $('.letter-nav'),
                         optionalItems = $(`<input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div>`);
+
+                    // Add Navigation by letters
+                    if (!letterNav.find('a[href="#' + firstChar + '"]').length > 0) {
+
+                        currentSelection.attr('id', firstChar);
+                        letterNav.append($(`<a class="letter" href="#${firstChar}">${firstChar}</a>`));
+                    }
 
                     // Loop through values
                     for (let i = 0; i < value.length; i++) {

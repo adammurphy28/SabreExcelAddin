@@ -104,19 +104,33 @@ body {
 }
 
 #reload {
-    color: #353839;
-    float: right;
-    position: relative;
-    transform: rotate(0);
-    z-index: 999;
+    align-items: center;
+    background: #353839;
+    border-radius: 2px 2px 0 0;
+    color: #fff;
+    display: flex;
+    height: 29.2px;
+    justify-content: center;
+    position: fixed;
+    right: 0;
+    top: 5px;
+    text-decoration: none;
+    width: 24.2px;
 }
 
 #reload:hover {
+    background: #E50000;
+}
+
+#reload > i {
+    transform: rotate(0);
+}
+
+#reload:hover > i {
     animation-name: rotate;
     animation-duration: 1s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-    color: #E50000;
 }
 
 .iteration-container,
@@ -234,6 +248,10 @@ label[for=all-options-dropdown]:after {
     width: fit-content;
 }
 
+.selection:not(#first-selection) {
+    padding-right: 25px;
+}
+
 [class*=selection-] {
     align-items: center;
     display: flex;
@@ -316,17 +334,41 @@ label[for=all-options-dropdown]:after {
     width: 100%;
 }
 
+.letter-nav {
+    direction: rtl;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 61px;
+}
+
+.letter-nav .letter {
+    background: #353839;
+    color: #fff;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.letter-nav .letter:hover {
+    background: #E50000;
+}
+
 #toBottom,
 #toTop {
     align-items: center;
     background: #353839;
-    border-radius: 100%;
     color: #fff;
     display: flex;
-    height: 40px;
+    height: 29.2px;
     justify-content: center;
+    position: fixed;
+    right: 0;
     text-decoration: none;
-    width: 40px;
+    width: 24.2px;
 }
 
 #toBottom:hover,
@@ -335,7 +377,10 @@ label[for=all-options-dropdown]:after {
 }
 
 #toBottom {
-    bottom: 20px;
-    position: fixed;
-    right: 20px;
+    border-radius: 0 0 2px 2px;
+    top: 561px;
+}
+
+#toTop {
+    top: 33px;
 }
