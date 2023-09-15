@@ -14,137 +14,71 @@
         $(document).ready(async function () {
 
             const copyArea = $('.copyArea'),
-                crewInfo = await getCrewInfo();
-            let m = 0;
+                crewInfo = await getCrewInfo(),
+                sortedItems = Object.values(crewInfo).sort();
 
             if (correctFormat) {
 
-                // Loop through filtered items
-                $.each(crewInfo, function (key, value) {
-
-                    const memberName = value[0],
-                        memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div></div>`);
-
-                    $('.crew-member-select-container').append(memberHtml);
-
-                    const currentSelection = $(`.selection-${m}`),
-                        containsOptional = $(`.selection-${m} .optional-items`),
-                        firstChar = memberName.charAt(0),
-                        letterNav = $('.letter-nav'),
-                        optionalItems = $(`<input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div>`);
-
-                    // Add Navigation by letters
-                    if (!letterNav.find('a[href="#' + firstChar + '"]').length > 0) {
-
-                        currentSelection.attr('id', firstChar);
-                        letterNav.append($(`<a class="letter" href="#${firstChar}">${firstChar}</a>`));
-                    }
-
-                    // Loop through values
-                    for (let i = 0; i < value.length; i++) {
-
-                        // If value contain Frequent Flyer ID
-                        if (/^FF.*$/.test(value[i])) {
-
-                            // If selection member does not contain optional items dropdown
-                            if (!containsOptional.length > 0) {
-                                currentSelection.append(optionalItems);
-                            }
-
-                            // If container does not exist
-                            if (!$(`#FF-select-${m}`).length > 0) {
-                                $(`.selection-${m} .optional-items`).append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
-                            }
-
-                            // If value contains multiple FF in one cell
-                            if (/^FF.*FF.*$/.test(value[i])) {
-
-                                // Split value by whitespace
-                                const multipleFF = value[i].split(/[\s]/);
-
-                                // Loop through array of split values
-                                for (let j = 0; j < multipleFF.length; j++) {
-
-                                    // If value starts with "FF"
-                                    if (multipleFF[j].substring(0, 2) === "FF") {
-
-                                        // Append each value to dropdown
-                                        $(`#FF-select-${m}`).append($(`<option value="${multipleFF[j]}">${multipleFF[j]}</option>`));
-                                    }
-                                }
-                            } else {
-                                // Append value to dropdown
-                                $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
-                            }
-                        }
-
-                        // If value contains Passport
-                        if (value[i].includes("3DOCS/P/")) {
-
-                            // Remove any formatting inconsistencies
-                            const valueFormatted = value[i].replace("/ ", "");
-
-                            // If selection member does not contain optional items dropdown
-                            if (!containsOptional.length > 0) {
-                                currentSelection.append(optionalItems);
-                            }
-
-                            // Append Passport Container to Optional Items Container
-                            $(`.selection-${m} .optional-items`).append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
-
-                            // If there are multiple Passports
-                            if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
-
-                                // Split Passports by space between each
-                                const multiplePassports = valueFormatted.split(/(?<=[a-zA-Z]*[0-9]*)[\s](?=3DOCS\/P\/)/g);
-
-                                // For each Passport
-                                for (let j = 0; j < multiplePassports.length; j++) {
-
-                                    // Verify value is equal to Passport format
-                                    if (multiplePassports[j].substring(0, 8) === "3DOCS/P/") {
-
-                                        // Add Passport as option
-                                        $(`#passport-select-${m}`).append(`<option value="${multiplePassports[j]}">${multiplePassports[j].substring(0, 11)}...</option>`);
-                                    }
-                                }
-                                // Else
-                            } else {
-
-                                // Add Passport as option
-                                $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
-                            }
-                        }
-
-                        // If value contains Meal Preference
-                        if (/3[a-zA-z]{2}MLA/.test(value[i])) {
-
-                            // If selection member does not contain optional items dropdown
-                            if (!containsOptional.length > 0) {
-                                currentSelection.append(optionalItems);
-                            }
-
-                            $(`.selection-${m} .optional-items`).append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
-                        }
-                    }
-
-                    m++;
-                });
+                displayInfo(sortedItems);
 
             } else {
                 
                 $('<p class="error">Incorrect Formatting. Please add one column with "Name" (ex. LastName/FirstName MiddleName) and one column with birthday(ex. 3DOCS/DB/01JAN2023/G/LASTNAME/FIRSTNAME/MIDDLENAME)(Please substitute "G" in birthday for gender initial. M or F)</p>').insertBefore($('.copyArea'));
             }
 
+            // When disabling alphabetical order
+            $('#disable-order').on('change', function () {
+
+                const checkbox = $(this);
+
+                let order = false;
+
+                if (checkbox.is(':checked')) {
+
+                    clearMembers();
+
+                    $('.letter-nav').remove();
+
+                    $('body').addClass('no-letter-nav');
+
+                    reset();
+
+                    displayInfo(crewInfo, order);
+
+                } else {
+
+                    order = true;
+
+                    clearMembers();
+
+                    $('body').removeClass('no-letter-nav');
+
+                    $('<div class="letter-nav"></div>').insertAfter(copyArea);
+
+                    reset();
+
+                    displayInfo(sortedItems, order);
+                }
+
+            });
+
             // When clicking member
-            $('input.member').on('click', function () {
+            $('.crew-member-select-container').on('change', 'input.member', function () {
                 const member = $(this),
                     optionalItems = member.parents('.selection').children('.optional-items-dropdown');
 
+                let infoData = sortedItems;
+
+                // If alphabetical order is turned off
+                if ($('#disable-order').is(':checked')) {
+                    infoData = crewInfo;
+                }
+
                 // If member is checked
                 if (member.is(':checked')) {
+
                     // Add member to textbox and increase iteration
-                    if (formatInfo(member, crewInfo, copyArea)) crewIteration++;
+                    if (formatInfo(member, infoData, copyArea)) crewIteration++;
 
                     if (!optionalItems.is(':checked')) {
                         optionalItems.click();
@@ -162,7 +96,7 @@
             });
 
             // When changing iteration
-            $('select[name=iteration-value]').on('change', function () {
+            $('.crew-member-select-container').on('change', 'select[name=iteration-value]', function () {
                 const dropdown = $(this),
                     iterationValue = dropdown.val();
 
@@ -170,7 +104,7 @@
             });
 
             // When choosing Frequent Flyer
-            $('select[name=FF-select]').on('change', function () {
+            $('.crew-member-select-container').on('change', 'select[name=FF-select]', function () {
                 const dropdown = $(this),
                     ff = dropdown.val();
 
@@ -178,7 +112,7 @@
             });
 
             // When choosing Meal Preference
-            $('input.meal-preference').on('click', function () {
+            $('.crew-member-select-container').on('click', 'input.meal-preference', function () {
                 const mealToggle = $(this),
                     mealPreference = mealToggle.data('meal-preference');
 
@@ -186,7 +120,7 @@
             });
 
             // When chooseing Passport
-            $('select[name=passport-select]').on('change', function () {
+            $('.crew-member-select-container').on('change', 'select[name=passport-select]', function () {
                 const dropdown = $(this),
                     passport = dropdown.val();
 
@@ -592,6 +526,20 @@
         copyTarget.append(textBox);
     }
 
+    function clearMembers() {
+
+        $('.selection').each(function () {
+
+            const selection = $(this);
+
+            if (selection.attr('id') !== 'first-selection') {
+
+                selection.remove();
+            }
+        });
+
+    }
+
     function deselectAll(event) {
         event.preventDefault();
 
@@ -613,6 +561,127 @@
                 }
             });
         }
+    }
+
+    function displayInfo(info, hasOrder = true) {
+
+        let m = 0;
+
+        // Loop through filtered items
+        $.each(info, function (key, value) {
+
+            const memberName = value[0],
+                memberHtml = $(`<div class="selection selection-${m}"><div class="member-name"><input id="member-${m}" class="member" name="member-${m}" type="checkbox" /><label for="member-${m}">${memberName}</label></div></div>`);
+
+            $('.crew-member-select-container').append(memberHtml);
+
+            const currentSelection = $(`.selection-${m}`),
+                containsOptional = $(`.selection-${m} .optional-items`),
+                firstChar = memberName.charAt(0),
+                letterNav = $('.letter-nav'),
+                optionalItems = $(`<input class="optional-items-dropdown" id="optional-items-dropdown-${m}" name="optional-items-dropdown-${m}" type="checkbox" /><label for="optional-items-dropdown-${m}"><i class="fa-solid fa-angle-up"></i></label><div class="optional-items"></div>`);
+
+            // Add Navigation by letters
+
+            if (hasOrder) {
+
+                if (!letterNav.find('a[href="#' + firstChar + '"]').length > 0) {
+
+                    currentSelection.attr('id', firstChar);
+                    letterNav.append($(`<a class="letter" href="#${firstChar}">${firstChar}</a>`));
+                }
+            }
+
+            // Loop through values
+            for (let i = 0; i < value.length; i++) {
+
+                // If value contain Frequent Flyer ID
+                if (/^FF.*$/.test(value[i])) {
+
+                    // If selection member does not contain optional items dropdown
+                    if (!containsOptional.length > 0) {
+                        currentSelection.append(optionalItems);
+                    }
+
+                    // If container does not exist
+                    if (!$(`#FF-select-${m}`).length > 0) {
+                        $(`.selection-${m} .optional-items`).append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
+                    }
+
+                    // If value contains multiple FF in one cell
+                    if (/^FF.*FF.*$/.test(value[i])) {
+
+                        // Split value by whitespace
+                        const multipleFF = value[i].split(/[\s]/);
+
+                        // Loop through array of split values
+                        for (let j = 0; j < multipleFF.length; j++) {
+
+                            // If value starts with "FF"
+                            if (multipleFF[j].substring(0, 2) === "FF") {
+
+                                // Append each value to dropdown
+                                $(`#FF-select-${m}`).append($(`<option value="${multipleFF[j]}">${multipleFF[j]}</option>`));
+                            }
+                        }
+                    } else {
+                        // Append value to dropdown
+                        $(`#FF-select-${m}`).append($(`<option value="${value[i]}">${value[i]}</option>`));
+                    }
+                }
+
+                // If value contains Passport
+                if (value[i].includes("3DOCS/P/")) {
+
+                    // Remove any formatting inconsistencies
+                    const valueFormatted = value[i].replace("/ ", "");
+
+                    // If selection member does not contain optional items dropdown
+                    if (!containsOptional.length > 0) {
+                        currentSelection.append(optionalItems);
+                    }
+
+                    // Append Passport Container to Optional Items Container
+                    $(`.selection-${m} .optional-items`).append(`<div class="passport-container"><label for="passport-${m}">Choose a Passport:</label><select id="passport-select-${m}" class="passport-toggle" name="passport-select" type="checkbox"><option value="">-</option></select></div>`);
+
+                    // If there are multiple Passports
+                    if (/^(3DOCS\/P\/).*(3DOCS\/P\/).*$/.test(valueFormatted)) {
+
+                        // Split Passports by space between each
+                        const multiplePassports = valueFormatted.split(/(?<=[a-zA-Z]*[0-9]*)[\s](?=3DOCS\/P\/)/g);
+
+                        // For each Passport
+                        for (let j = 0; j < multiplePassports.length; j++) {
+
+                            // Verify value is equal to Passport format
+                            if (multiplePassports[j].substring(0, 8) === "3DOCS/P/") {
+
+                                // Add Passport as option
+                                $(`#passport-select-${m}`).append(`<option value="${multiplePassports[j]}">${multiplePassports[j].substring(0, 11)}...</option>`);
+                            }
+                        }
+                        // Else
+                    } else {
+
+                        // Add Passport as option
+                        $(`#passport-select-${m}`).append(`<option value="${valueFormatted}">${valueFormatted.substring(0, 11)}...</option>`);
+                    }
+                }
+
+                // If value contains Meal Preference
+                if (/3[a-zA-z]{2}MLA/.test(value[i])) {
+
+                    // If selection member does not contain optional items dropdown
+                    if (!containsOptional.length > 0) {
+                        currentSelection.append(optionalItems);
+                    }
+
+                    $(`.selection-${m} .optional-items`).append(`<div class="meal-container"><input class="meal-preference" data-meal-preference="${value[i]}" id="meal-${m}" name="meal-${m}" type="checkbox" /><label for="meal-${m}">Include Meal Preference</label></div>`);
+                }
+            }
+
+            m++;
+        });
     }
 
     function formatInfo(input, info, copyTarget) {
@@ -729,10 +798,6 @@
             }
         });
 
-        const sortedItems = Object.values(filteredItems).sort();
-
-        filteredItems = sortedItems;
-
         return filteredItems;
     }
 
@@ -830,6 +895,14 @@
         }
 
         return true;
+    }
+
+    function reset() {
+
+        $('.copyArea').text('');
+        $('#iteration-value').val('');
+        textBox = [];
+        crewIteration = 1;
     }
 
     function scrollToBottom(event) {

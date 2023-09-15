@@ -91,7 +91,7 @@ body {
     color: #353839;
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 20px 62px 20px 20px;
 }
 
 .error {
@@ -112,7 +112,7 @@ body {
     height: 29.2px;
     justify-content: center;
     position: fixed;
-    right: 0;
+    right: 10px;
     top: 5px;
     text-decoration: none;
     width: 24.2px;
@@ -133,16 +133,32 @@ body {
     animation-timing-function: linear;
 }
 
+.order-options,
 .iteration-container,
 .btn-group,
 .optional-items {
     display: none;
 }
 
-#all-options-dropdown:checked + label + .iteration-container,
-#all-options-dropdown:checked + label + .iteration-container + .btn-group,
+#all-options-dropdown:checked + label + .order-options,
+#all-options-dropdown:checked + label + .order-options + .iteration-container,
+#all-options-dropdown:checked + label + .order-options + .iteration-container + .btn-group,
 .optional-items-dropdown:checked + label + .optional-items {
     display: flex;
+}
+
+.order-options {
+    margin: 10px 0;
+}
+
+.order-options > input,
+.order-options > label {
+    cursor: pointer;
+}
+
+.order-options > input:hover + label,
+.order-options > label:hover {
+    color: #E50000;
 }
 
 .btn-group {
@@ -249,7 +265,8 @@ label[for=all-options-dropdown]:after {
 }
 
 .selection:not(#first-selection) {
-    padding-right: 25px;
+    max-width: 300px;
+    padding-right: 10px;
 }
 
 [class*=selection-] {
@@ -330,6 +347,7 @@ label[for=all-options-dropdown]:after {
 
 .copyArea {
     margin: 10px 0;
+    max-width: 290px;
     min-height: 100px;
     width: 100%;
 }
@@ -339,9 +357,10 @@ label[for=all-options-dropdown]:after {
     display: flex;
     flex-direction: column;
     height: 500px;
-    overflow: auto;
+    overflow-y: auto;
+    padding-left: 15px;
     position: fixed;
-    right: 0;
+    right: 10px;
     top: 61px;
 }
 
@@ -366,7 +385,7 @@ label[for=all-options-dropdown]:after {
     height: 29.2px;
     justify-content: center;
     position: fixed;
-    right: 0;
+    right: 10px;
     text-decoration: none;
     width: 24.2px;
 }
@@ -383,4 +402,8 @@ label[for=all-options-dropdown]:after {
 
 #toTop {
     top: 33px;
+}
+
+body.no-letter-nav > #toBottom{
+    top: 62px;
 }
