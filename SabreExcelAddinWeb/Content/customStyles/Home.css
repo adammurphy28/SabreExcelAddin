@@ -353,6 +353,7 @@ label[for=all-options-dropdown]:after {
 }
 
 .letter-nav {
+    border-radius: 0 0 2px 2px;
     direction: rtl;
     display: flex;
     flex-direction: column;
@@ -361,7 +362,7 @@ label[for=all-options-dropdown]:after {
     padding-left: 15px;
     position: fixed;
     right: 10px;
-    top: 61px;
+    top: 91px;
 }
 
 .letter-nav .letter {
@@ -396,14 +397,31 @@ label[for=all-options-dropdown]:after {
 }
 
 #toBottom {
-    border-radius: 0 0 2px 2px;
-    top: 561px;
+    top: 62px;
 }
 
 #toTop {
     top: 33px;
 }
 
-body.no-letter-nav > #toBottom{
-    top: 62px;
+body.no-letter-nav > #toBottom {
+    border-radius: 0 0 2px 2px;
+}
+
+@media (max-height: 600px) {
+    .letter-nav {
+        height: 325px;
+    }
+}
+
+@media (max-height: 450px) {
+    .letter-nav {
+        height: 180px;
+    }
+}
+
+@media (max-height: 275px) {
+    .letter-nav {
+        height: 90px;
+    }
 }
