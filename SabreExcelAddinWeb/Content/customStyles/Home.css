@@ -334,11 +334,19 @@ label[for=all-options-dropdown]:after {
 }
 
 .meal-container {
-    order: 3;
+    order: 4;
 }
 
 .passport-container {
+    order: 3;
+}
+
+.partner-container {
     order: 2;
+}
+
+.optional-items > * > label {
+    display: block;
 }
 
 .FF-container {

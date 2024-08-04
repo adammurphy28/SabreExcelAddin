@@ -21,7 +21,8 @@
 
                 displayInfo(sortedItems);
 
-            } else {
+            }
+            else {
                 
                 $('<p class="error">Incorrect Formatting. Please add one column with "Name" (ex. LastName/FirstName MiddleName) and one column with birthday(ex. 3DOCS/DB/01JAN2023/G/LASTNAME/FIRSTNAME/MIDDLENAME)(Please substitute "G" in birthday for gender initial. M or F)</p>').insertBefore($('.copyArea'));
             }
@@ -106,9 +107,261 @@
             // When choosing Frequent Flyer
             $('.crew-member-select-container').on('change', 'select[name=FF-select]', function () {
                 const dropdown = $(this),
-                    ff = dropdown.val();
+                    ff = dropdown.val(),
+                    airline = ff.substring(0, 4),
+                    americanAirlinePartners = [
+                        {
+                            partner: 'Aer Lingus',
+                            code: 'EI'
+                        },
+                        {
+                            partner: 'Air Tahiti Nui',
+                            code: 'TN'
+                        },
+                        {
+                            partner: 'Alaska Airlines',
+                            code: 'AS'
+                        },
+                        {
+                            partner: 'British Airways',
+                            code: 'BA'
+                        },
+                        {
+                            partner: 'Cape Air',
+                            code: '9K'
+                        },
+                        {
+                            partner: 'Cathay Pacific',
+                            code: 'CX'
+                        },
+                        {
+                            partner: 'China Southern Airlines',
+                            code: 'CZ'
+                        },
+                        {
+                            partner: 'Etihad Airways',
+                            code: 'EY'
+                        },
+                        {
+                            partner: 'Fiji Airways',
+                            code: 'FJ'
+                        },
+                        {
+                            partner: 'Finnair',
+                            code: 'AY'
+                        },
+                        {
+                            partner: 'GOL Airlines',
+                            code: 'G3'
+                        },
+                        {
+                            partner: 'Hawaiian Airlines',
+                            code: 'HA'
+                        },
+                        {
+                            partner: 'Iberia',
+                            code: 'IB'
+                        },
+                        {
+                            partner: 'Japan Airlines',
+                            code: 'JL'
+                        },
+                        {
+                            partner: 'JetBlue*',
+                            code: 'B6'
+                        },
+                        {
+                            partner: 'Malaysia Airlines',
+                            code: 'MH'
+                        },
+                        {
+                            partner: 'Qantas',
+                            code: 'QF'
+                        },
+                        {
+                            partner: 'Qatar Airways',
+                            code: 'QR'
+                        },
+                        {
+                            partner: 'Royal Air Maroc',
+                            code: 'AT'
+                        },
+                        {
+                            partner: 'Royal Jordanian Airlines',
+                            code: 'RJ'
+                        },
+                        {
+                            partner: 'SriLankan Airlines',
+                            code: 'UL'
+                        },
+                    ],
+                    deltaAirlinePartners = [
+                        {
+                            partner: 'Aeromexico',
+                            code: 'AM'
+                        },
+                        {
+                            partner: 'Air france',
+                            code: 'AF'
+                        },
+                        {
+                            partner: 'China eastern',
+                            code: 'MU'
+                        },
+                        {
+                            partner: 'KLM',
+                            code: 'KL'
+                        },
+                        {
+                            partner: 'Korean air',
+                            code: 'KE'
+                        },
+                        {
+                            partner: 'Latam',
+                            code: 'LA'
+                        },
+                        {
+                            partner: 'Virgin atlantic',
+                            code: 'VS'
+                        },
+                        {
+                            partner: 'West jet',
+                            code: 'WS'
+                        },
+                    ],
+                    unitedAirlinePartners = [
+                        {
+                            partner: 'Aegean Airlines',
+                            code: 'A3'
+                        },
+                        {
+                            partner: 'Air Canada Air',
+                            code: 'AC'
+                        },
+                        {
+                            partner: 'ANA',
+                            code: 'NH'
+                        },
+                        {
+                            partner: 'Asiana Airlines',
+                            code: 'OZ'
+                        },
+                        {
+                            partner: 'Austrian Airlines',
+                            code: 'OS'
+                        },
+                        {
+                            partner: 'Avianca',
+                            code: 'AV'
+                        },
+                        {
+                            partner: 'Brussels Airlines',
+                            code: 'SN'
+                        },
+                        {
+                            partner: 'China Air',
+                            code: 'CI'
+                        },
+                        {
+                            partner: 'Copa Airlines',
+                            code: 'CM'
+                        },
+                        {
+                            partner: 'Croatia Airlines',
+                            code: 'OU'
+                        },
+                        {
+                            partner: 'Egypt Air',
+                            code: 'MS'
+                        },
+                        {
+                            partner: 'Ethiopian Airlines',
+                            code: 'ET'
+                        },
+                        {
+                            partner: 'Eva Airways',
+                            code: 'BR'
+                        },
+                        {
+                            partner: 'India Air',
+                            code: 'AI'
+                        },
+                        {
+                            partner: 'LOT Polish Airlines',
+                            code: 'LO'
+                        },
+                        {
+                            partner: 'Lufthansa',
+                            code: 'LH'
+                        },
+                        {
+                            partner: 'New Zealand',
+                            code: 'NZ'
+                        },
+                        {
+                            partner: 'Scandinavian Airlines',
+                            code: 'SK'
+                        },
+                        {
+                            partner: 'Shenzhen Airlines',
+                            code: 'ZH'
+                        },
+                        {
+                            partner: 'Singapore Airlines',
+                            code: 'SQ'
+                        },
+                        {
+                            partner: 'South African Airways',
+                            code: 'SA'
+                        },
+                        {
+                            partner: 'Swiss International Airlines',
+                            code: 'LX'
+                        },
+                        {
+                            partner: 'TAP Air Portugal',
+                            code: 'TP'
+                        },
+                        {
+                            partner: 'Thai Airways International',
+                            code: 'TG'
+                        },
+                        {
+                            partner: 'Turkish Airlines',
+                            code: 'TK'
+                        },
+                    ],
+                    partnerContainer = dropdown.parent().siblings('.partner-container').find('select[name="partner-select"]');
 
                 addFrequentFlyer(dropdown, ff, copyArea);
+
+                // Function to add partners to dropdown based on FF
+                function addPartners(partners) {
+
+                    // Clear HTML beforehand
+                    partnerContainer.html('<option value="">-</option>');
+
+                    // Loop through partner variable passed
+                    partners.forEach(function (p) {
+                        // Find the partner container relevant to this person and append the airline partner info to the dropdown
+                        partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
+                    });
+                }
+
+                switch (airline) {
+                    case 'FFAA':
+                        addPartners(americanAirlinePartners);
+                        break;
+                    case 'FFDL':
+                        addPartners(deltaAirlinePartners);
+                        break;
+                    case 'FFUA':
+                        addPartners(unitedAirlinePartners);
+                        break;
+                    default:
+                        partnerContainer.html('<option value="">-</option>');
+                        break;
+                }
             });
 
             // When choosing Meal Preference
@@ -117,6 +370,14 @@
                     mealPreference = mealToggle.data('meal-preference');
 
                 addMealPreference(mealToggle, mealPreference, copyArea);
+            });
+
+            // When choosing Partner Preference
+            $('.crew-member-select-container').on('change', 'select[name=partner-select]', function () {
+                const dropdown = $(this),
+                    partner = dropdown.val();
+
+                addFrequentFlyer(dropdown, partner, copyArea, true);
             });
 
             // When chooseing Passport
@@ -152,11 +413,11 @@
             })
         });
     };
+    function addFrequentFlyer(input, value, copyTarget, hasPartner = false) {
 
-    function addFrequentFlyer(input, value, copyTarget) {
-
-        const id = input.attr('id').replace('FF-select-', ''),
+        const id = input.attr('id').replace(/^.*-select-/, ''),
             checkBox = $(`input#member-${id}`),
+            ffNumber = new RegExp(/(?<=§)F{2}.*[^\§\-]/),
             ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*?(?=[§])./),
             ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
             label = checkBox.siblings('label').text();
@@ -172,21 +433,42 @@
             // If item in textbox matches label name
             if (textBox[i].includes(label)) {
 
-                let ffId = textBox[i].match(ffRegex);
+                let ffId = textBox[i].match(ffRegex),
+                    // Get only the FF number
+                    number = hasPartner ? textBox[i].match(ffNumber) : '';
+
+                if (number !== null && number !== '') {
+                    // Remove anything leftover other than the number
+                    number = number[0].split('/');
+                    number = number[0].split('-');
+                }
 
                 // If dropdown option is blank
                 if (value === "") {
 
+                    // If we're deadline with a partner airline
+                    if (hasPartner) {
+
+                        // Grab the partner identifier
+                        let airlinePartner = new RegExp(`(?<=${number[0]})\/..`);
+
+                        // Find that match
+                        ffId = textBox[i].match(airlinePartner);
+
+                        // Replace with empty string
+                        textBox[i] = textBox[i].replace(ffId[0], '');
+                    }
                     // If textboxt item has iteration
-                    if (ffIterRegex.test(textBox[i])) {
+                    else if (ffIterRegex.test(textBox[i])) {
 
                         ffId = textBox[i].match(ffIterRegex);
 
                         // Replace FF and iteration with empty string
                         textBox[i] = textBox[i].replace(ffId[0], sabreSymbol);
 
+                    }
                     // Else
-                    } else {
+                    else {
 
                         // Replace FF with empty string
                         textBox[i] = textBox[i].replace(ffId[0], sabreSymbol);
@@ -195,7 +477,8 @@
                 // Else
                 } else {
 
-                    let replacementText = sabreSymbol + value + sabreSymbol;
+                    // Check for partner airline and handle accordingly
+                    let replacementText = hasPartner ? sabreSymbol + number[0] + '/' + value + sabreSymbol : sabreSymbol + value + sabreSymbol;
 
                     // If items are iterated
                     if (crewIteration > 2) {
@@ -205,7 +488,11 @@
 
                         memberIteration.length > 1 ? memberIteration = memberIteration[1].replace(sabreSymbol, "") : memberIteration = "";
 
-                        replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
+                        if (hasPartner) {
+                            replacementText = sabreSymbol + number[0] + '/' + value + memberIteration + sabreSymbol;
+                        } else {
+                            replacementText = sabreSymbol + value + memberIteration + sabreSymbol;
+                        }
 
                         // Add Frequent flyer and iteration to text box
                         if (ffRegex.test(textBox[i])) {
@@ -220,7 +507,11 @@
 
                         } else {
 
-                            textBox[i] = textBox[i] + value + memberIteration + sabreSymbol;
+                            if (hasPartner) {
+                                textBox[i] = textBox[i] + number[0] + '/' + value + memberIteration + sabreSymbol;
+                            } else {
+                                textBox[i] = textBox[i] + value + memberIteration + sabreSymbol;
+                            }
                         }
 
                     // Else
@@ -239,7 +530,11 @@
 
                         } else {
 
-                            textBox[i] = textBox[i] + value + sabreSymbol;
+                            if (hasPartner) {
+                                textBox[i] = textBox[i] + number[0] + '/' + value + sabreSymbol;
+                            } else {
+                                textBox[i] = textBox[i] + value + sabreSymbol;
+                            }
                         }
                     }
                 }
@@ -606,6 +901,11 @@
                     // If container does not exist
                     if (!$(`#FF-select-${m}`).length > 0) {
                         $(`.selection-${m} .optional-items`).append(`<div class="FF-container"><label>Choose a Frequent Flyer:</label><select name="FF-select" id="FF-select-${m}"><option value="">-</option></select></div>`)
+                    }
+
+                    // Add partner container if it doesn't exist
+                    if (!$(`#partner-select-${m}`).length > 0) {
+                        $(`<div class="partner-container"><label>Choose an Airline Partner:</label><select name="partner-select" id="partner-select-${m}"><option value="">-</option></select></div>`).insertAfter(`.selection-${m} .optional-items .FF-container`);
                     }
 
                     // If value contains multiple FF in one cell
