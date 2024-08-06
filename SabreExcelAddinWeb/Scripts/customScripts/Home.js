@@ -108,7 +108,7 @@
             $('.crew-member-select-container').on('change', 'select[name=FF-select]', function () {
                 const dropdown = $(this),
                     ff = dropdown.val(),
-                    airline = ff.substring(0, 4),
+                    airline = ff.substring(0, 4).replace('FF', ''),
                     americanAirlinePartners = [
                         {
                             partner: 'Aer Lingus',
@@ -121,6 +121,10 @@
                         {
                             partner: 'Alaska Airlines',
                             code: 'AS'
+                        },
+                        {
+                            partner: 'American Airlines',
+                            code: 'AA'
                         },
                         {
                             partner: 'British Airways',
@@ -207,6 +211,10 @@
                         {
                             partner: 'China eastern',
                             code: 'MU'
+                        },
+                        {
+                            partner: 'Delta Airlines',
+                            code: 'DL'
                         },
                         {
                             partner: 'KLM',
@@ -330,38 +338,54 @@
                             partner: 'Turkish Airlines',
                             code: 'TK'
                         },
+                        {
+                            partner: 'United Airlines',
+                            code: 'UA'
+                        },
                     ],
                     partnerContainer = dropdown.parent().siblings('.partner-container').find('select[name="partner-select"]');
 
                 addFrequentFlyer(dropdown, ff, copyArea);
 
                 // Function to add partners to dropdown based on FF
-                function addPartners(partners) {
-
-                    // Clear HTML beforehand
-                    partnerContainer.html('<option value="">-</option>');
+                function addPartners(partners) { 
 
                     // Loop through partner variable passed
                     partners.forEach(function (p) {
                         // Find the partner container relevant to this person and append the airline partner info to the dropdown
-                        partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
+                        if (p.code !== airline) {
+                            partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
+                        }
                     });
                 }
 
-                switch (airline) {
-                    case 'FFAA':
-                        addPartners(americanAirlinePartners);
-                        break;
-                    case 'FFDL':
-                        addPartners(deltaAirlinePartners);
-                        break;
-                    case 'FFUA':
-                        addPartners(unitedAirlinePartners);
-                        break;
-                    default:
-                        partnerContainer.html('<option value="">-</option>');
-                        break;
-                }
+                // Check Airline partners to see if selected FF has partners
+                (function () {
+
+                    // Clear HTML beforehand
+                    partnerContainer.html('<option value="">-</option>');
+
+                    americanAirlinePartners.forEach(function (aa) {
+                        if (aa.code == airline) {
+                            addPartners(americanAirlinePartners);
+                            return;
+                        }
+                    });
+
+                    deltaAirlinePartners.forEach(function (dl) {
+                        if (dl.code == airline) {
+                            addPartners(deltaAirlinePartners);
+                            return;
+                        }
+                    });
+
+                    unitedAirlinePartners.forEach(function (ua) {
+                        if (ua.code == airline) {
+                            addPartners(unitedAirlinePartners);
+                            return;
+                        }
+                    });
+                }());
             });
 
             // When choosing Meal Preference
