@@ -438,7 +438,7 @@
 
         const id = input.attr('id').replace(/^.*-select-/, ''),
             checkBox = $(`input#member-${id}`),
-            ffNumber = new RegExp(/(?<=§)F{2}.*[^\§\-]/),
+            ffNumber = new RegExp(/(?<=§)F{2}.*?(?=§)/),
             ffRegex = new RegExp(/[§]F{2}[a-zA-Z].*?(?=[§])./),
             ffIterRegex = new RegExp(/[§]F{2}[a-zA-Z].*?[-][0-9]+[\.]1[§]/),
             label = checkBox.siblings('label').text();
