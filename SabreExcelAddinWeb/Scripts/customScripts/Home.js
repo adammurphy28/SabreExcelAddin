@@ -18,9 +18,7 @@
                 sortedItems = Object.values(crewInfo).sort();
 
             if (correctFormat) {
-
                 displayInfo(sortedItems);
-
             }
             else {
                 
@@ -108,6 +106,7 @@
             $('.crew-member-select-container').on('change', 'select[name=FF-select]', function () {
                 const dropdown = $(this),
                     ff = dropdown.val(),
+                    ffList = [],
                     airline = ff.substring(0, 4).replace('FF', ''),
                     americanAirlinePartners = [
                         {
@@ -345,6 +344,19 @@
                     ],
                     partnerContainer = dropdown.parent().siblings('.partner-container').find('select[name="partner-select"]');
 
+                sortedItems.forEach((item) => {
+
+                    if (item.includes(ff)) {
+
+                        item.forEach((info) => {
+
+                            if (info.includes('FF')) {
+                                ffList.push(info.substring(0, 4).replace('FF', ''));
+                            }
+                        });
+                    };
+                });
+
                 addFrequentFlyer(dropdown, ff, copyArea);
 
                 // Function to add partners to dropdown based on FF
@@ -353,7 +365,7 @@
                     // Loop through partner variable passed
                     partners.forEach(function (p) {
                         // Find the partner container relevant to this person and append the airline partner info to the dropdown
-                        if (p.code !== airline) {
+                        if (p.code !== airline && ffList.includes(p.code)) {
                             partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
                         }
                     });
@@ -415,7 +427,6 @@
             // Reload Button functionality
             $('#reload').on('click', function (e) {
                 e.preventDefault();
-
                 location.reload();
             });
 
