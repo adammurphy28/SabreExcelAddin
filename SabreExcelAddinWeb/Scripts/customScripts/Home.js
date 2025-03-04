@@ -502,7 +502,7 @@
                     partners.forEach(function (p) {
                         const partnersList = [];
                         // Find the partner container relevant to this person and append the airline partner info to the dropdown
-                        if (p.code !== airline && !partnerList.includes(p.code)) {
+                        if (p.code !== airline && !partnersList.includes(p.code)) {
                             partnersList.push(p.code);
                             partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
                         }
