@@ -360,7 +360,7 @@
                             partner: 'XiamenAir',
                             code: 'MF'
                         },
-                    ]
+                    ],
                     unitedAirlinePartners = [
                         {
                             partner: 'Aegean Airlines',
