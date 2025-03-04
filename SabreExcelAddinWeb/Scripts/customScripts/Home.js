@@ -193,18 +193,38 @@
                             code: 'RJ'
                         },
                         {
+                            partner: 'Silver Airways',
+                            code: '3M'
+                        },
+                        {
                             partner: 'SriLankan Airlines',
                             code: 'UL'
                         },
                     ],
                     deltaAirlinePartners = [
                         {
+                            partner: 'Aerolineas Argentinas',
+                            code: 'AR'
+                        },
+                        {
                             partner: 'Aeromexico',
                             code: 'AM'
                         },
                         {
+                            partner: 'Air Europa',
+                            code: 'UX'
+                        },
+                        {
                             partner: 'Air france',
                             code: 'AF'
+                        },
+                        {
+                            partner: 'Cape Air',
+                            code: '9K'
+                        },
+                        {
+                            partner: 'China Airlines',
+                            code: 'CI'
                         },
                         {
                             partner: 'China eastern',
@@ -213,6 +233,18 @@
                         {
                             partner: 'Delta Airlines',
                             code: 'DL'
+                        },
+                        {
+                            partner: 'Garuda Indonesia',
+                            code: 'GA'
+                        },
+                        {
+                            partner: 'Hawaiian Airlines',
+                            code: 'HA'
+                        },
+                        {
+                            partner: 'Kenya Airways',
+                            code: 'KQ'
                         },
                         {
                             partner: 'KLM',
@@ -227,6 +259,26 @@
                             code: 'LA'
                         },
                         {
+                            partner: 'Middle East Airlines',
+                            code: 'ME'
+                        },
+                        {
+                            partner: 'Scandinavian',
+                            code: 'SK'
+                        },
+                        {
+                            partner: 'Saudia',
+                            code: 'SV'
+                        },
+                        {
+                            partner: 'Tarom',
+                            code: 'RO'
+                        },
+                        {
+                            partner: 'Vietnam Airlines',
+                            code: 'VN'
+                        },
+                        {
                             partner: 'Virgin atlantic',
                             code: 'VS'
                         },
@@ -234,18 +286,108 @@
                             partner: 'West jet',
                             code: 'WS'
                         },
+                        {
+                            partner: 'XiamenAir',
+                            code: 'MF'
+                        },
                     ],
+                    scandinavianAirlinePartners = [
+                        {
+                            partner: 'Aerolineas Argentinas',
+                            code: 'AR'
+                        },
+                        {
+                            partner: 'Aeromexico',
+                            code: 'AM'
+                        },
+                        {
+                            partner: 'Air Europa',
+                            code: 'UX'
+                        },
+                        {
+                            partner: 'Air france',
+                            code: 'AF'
+                        },
+                        {
+                            partner: 'China Airlines',
+                            code: 'CI'
+                        },
+                        {
+                            partner: 'China eastern',
+                            code: 'MU'
+                        },
+                        {
+                            partner: 'Delta Airlines',
+                            code: 'DL'
+                        },
+                        {
+                            partner: 'Garuda Indonesia',
+                            code: 'GA'
+                        },
+                        {
+                            partner: 'KLM',
+                            code: 'KL'
+                        },
+                        {
+                            partner: 'Korean air',
+                            code: 'KE'
+                        },
+                        {
+                            partner: 'Middle East Airlines',
+                            code: 'ME'
+                        },
+                        {
+                            partner: 'Scandinavian',
+                            code: 'SK'
+                        },
+                        {
+                            partner: 'Saudia',
+                            code: 'SV'
+                        },
+                        {
+                            partner: 'Tarom',
+                            code: 'RO'
+                        },
+                        {
+                            partner: 'Vietnam Airlines',
+                            code: 'VN'
+                        },
+                        {
+                            partner: 'Virgin atlantic',
+                            code: 'VS'
+                        },
+                        {
+                            partner: 'XiamenAir',
+                            code: 'MF'
+                        },
+                    ]
                     unitedAirlinePartners = [
                         {
                             partner: 'Aegean Airlines',
                             code: 'A3'
                         },
                         {
-                            partner: 'Air Canada Air',
+                            partner: 'Air Canada',
                             code: 'AC'
                         },
                         {
-                            partner: 'ANA',
+                            partner: 'Air China',
+                            code: 'CA'
+                        },
+                        {
+                            partner: 'Air Dolomiti',
+                            code: 'EN'
+                        },
+                        {
+                            partner: 'Air India',
+                            code: 'AI'
+                        },
+                        {
+                            partner: 'Air New Zealand',
+                            code: 'NZ'
+                        },
+                        {
+                            partner: 'All Nippon (ANA)',
                             code: 'NH'
                         },
                         {
@@ -261,12 +403,16 @@
                             code: 'AV'
                         },
                         {
+                            partner: 'Azul',
+                            code: 'AD'
+                        },
+                        {
                             partner: 'Brussels Airlines',
                             code: 'SN'
                         },
                         {
-                            partner: 'China Air',
-                            code: 'CI'
+                            partner: 'Cape Air',
+                            code: '9K'
                         },
                         {
                             partner: 'Copa Airlines',
@@ -277,6 +423,10 @@
                             code: 'OU'
                         },
                         {
+                            partner: 'Edelweiss Air',
+                            code: 'WK'
+                        },
+                        {
                             partner: 'Egypt Air',
                             code: 'MS'
                         },
@@ -285,12 +435,20 @@
                             code: 'ET'
                         },
                         {
+                            partner: 'Eurowings',
+                            code: 'EW'
+                        },
+                        {
                             partner: 'Eva Airways',
                             code: 'BR'
                         },
                         {
-                            partner: 'India Air',
-                            code: 'AI'
+                            partner: 'Hawaiian Airlines',
+                            code: 'HA'
+                        },
+                        {
+                            partner: 'ITA Airways',
+                            code: 'AZ'
                         },
                         {
                             partner: 'LOT Polish Airlines',
@@ -301,35 +459,27 @@
                             code: 'LH'
                         },
                         {
-                            partner: 'New Zealand',
-                            code: 'NZ'
-                        },
-                        {
-                            partner: 'Scandinavian Airlines',
-                            code: 'SK'
-                        },
-                        {
                             partner: 'Shenzhen Airlines',
                             code: 'ZH'
+                        },
+                        {
+                            partner: 'Silver Airways',
+                            code: '3M'
                         },
                         {
                             partner: 'Singapore Airlines',
                             code: 'SQ'
                         },
                         {
-                            partner: 'South African Airways',
-                            code: 'SA'
-                        },
-                        {
-                            partner: 'Swiss International Airlines',
+                            partner: 'Swiss Airlines',
                             code: 'LX'
                         },
                         {
-                            partner: 'TAP Air Portugal',
+                            partner: 'TAP Air',
                             code: 'TP'
                         },
                         {
-                            partner: 'Thai Airways International',
+                            partner: 'Thai Airways',
                             code: 'TG'
                         },
                         {
@@ -373,6 +523,13 @@
                     deltaAirlinePartners.forEach(function (dl) {
                         if (dl.code == airline) {
                             addPartners(deltaAirlinePartners);
+                            return;
+                        }
+                    });
+
+                    scandinavianAirlinePartners.forEach(function (sk) {
+                        if (sk.code == airline) {
+                            addPartners(scandinavianAirlinePartners);
                             return;
                         }
                     });
