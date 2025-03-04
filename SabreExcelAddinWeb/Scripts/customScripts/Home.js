@@ -500,10 +500,8 @@
 
                     // Loop through partner variable passed
                     partners.forEach(function (p) {
-                        const partnersList = [];
                         // Find the partner container relevant to this person and append the airline partner info to the dropdown
-                        if (p.code !== airline && !partnersList.includes(p.code)) {
-                            partnersList.push(p.code);
+                        if (p.code !== airline) {
                             partnerContainer.append(`<option value="${p.code}">${p.partner}</option>`);
                         }
                     });
@@ -523,14 +521,14 @@
                     });
 
                     deltaAirlinePartners.forEach(function (dl) {
-                        if (dl.code == airline) {
+                        if (dl.code == airline && sk.code !== 'SK') {
                             addPartners(deltaAirlinePartners);
                             return;
                         }
                     });
 
                     scandinavianAirlinePartners.forEach(function (sk) {
-                        if (sk.code == airline) {
+                        if (sk.code == airline && sk.code !== 'DL') {
                             addPartners(scandinavianAirlinePartners);
                             return;
                         }
