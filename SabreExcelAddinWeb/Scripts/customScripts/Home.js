@@ -521,7 +521,7 @@
                     });
 
                     deltaAirlinePartners.forEach(function (dl) {
-                        if (dl.code == airline && sk.code !== 'SK') {
+                        if (dl.code == airline && dl.code !== 'SK') {
                             addPartners(deltaAirlinePartners);
                             return;
                         }
